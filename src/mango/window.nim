@@ -1,6 +1,7 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
 import nimgl/[glfw, opengl]
+import ioman
 import glm
 
 type
@@ -12,6 +13,9 @@ var
   windowsOpen: int = 0
   glfwInitiated: bool = false
   glInitiated: bool = false
+
+proc keyEvent(window: GLFWWindow, key: GLFWKey, scancode: int32, action: GLFWKeyAction, mods: GLFWKeyMod): void {.cdecl.} =
+  ioman.keyEvent(key, action != kaRelease)
 
 proc createWindow*(width: int32, height: int32): Window =
   if not glfwInitiated:
@@ -32,6 +36,7 @@ proc createWindow*(width: int32, height: int32): Window =
   windowsOpen.inc
 
   result.raw.makeContextCurrent()
+  discard result.raw.setKeyCallback(keyEvent)
 
   if not glInitiated:
     assert glInit()
@@ -48,6 +53,7 @@ proc isOpen*(window: Window): bool =
 
 proc destroy*(window: Window) =
   window.raw.destroyWindow()
-  if windowsOpen == 1 and glfwInitiated:
+  windowsOpen.dec
+  if windowsOpen < 1 and glfwInitiated:
     glfwTerminate()
-    windowsOpen.dec
+    glfwInitiated = false
