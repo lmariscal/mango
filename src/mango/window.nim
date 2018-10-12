@@ -47,6 +47,10 @@ proc update*(window: Window) =
   if keyQ.isPressed() and keyLeftControl.isPressed():
     window.raw.setWindowShouldClose(true)
 
+proc clearScreen*(color: Vec3) =
+  glClearColor(color.r, color.g, color.b, 1.0f)
+  glClear(GL_COLOR_BUFFER_BIT)
+
 proc draw*(window: Window) =
   window.raw.swapBuffers()
 

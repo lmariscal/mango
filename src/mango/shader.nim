@@ -1,6 +1,7 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
 import nimgl/opengl
+import glm
 import strutils
 
 type
@@ -9,7 +10,8 @@ type
     vertex*: uint32
     fragment*: uint32
 
-  ShaderSource* = ref object
+  ShaderSource* = object
+    other*: cstring
     vertex*: cstring
     fragment*: cstring
     path*: string
@@ -21,28 +23,43 @@ converter toString(chars: seq[cchar]): string =
     result.add(c)
 
 proc readShader*(path: string): ShaderSource =
-  let source = readFile(path)
+  var source: string
+  result.path = path
+  try:
+    source = readFile(path)
+  except:
+    echo "[error] failed to open shader \"" & path & "\""
+    return
+
   var
     vertex = ""
     fragment = ""
+    other = ""
     index = 0
 
   for line in source.splitLines:
-    if line == "@vertex":
-      index = 1
-      continue
-    elif line == "@fragment":
-      index = 2
-      continue
-    elif line.startsWith("//"): continue
+    if line.startsWith("//"): continue
     elif line == "": continue
 
-    if index == 0: continue
+    if line[0] == '@':
+      if line == "@vertex": index = 1
+      elif line == "@fragment": index = 2
+      elif line == "@other": index = 0
+      elif line.startsWith("@include "):
+        var name = line["@include ".len ..< line.len]
+        if not name.endsWith(".glsl"): name.add(".glsl")
+
+        let other_shader = readShader(path[0 .. path.rfind('/')] & name)
+        if index == 0: other.add($other_shader.other)
+        elif index == 1: vertex.add($other_shader.other)
+        elif index == 2: fragment.add($other_shader.other)
+      continue
+
+    if index == 0: other.add(line & "\n")
     elif index == 1: vertex.add(line & "\n")
     elif index == 2: fragment.add(line & "\n")
   
-  result = new ShaderSource
-  result.path = path
+  result.other = other
   result.vertex = vertex
   result.fragment = fragment
 
@@ -58,12 +75,12 @@ proc statusShader*(shader: uint32, `type`: string, path: string) =
 
 proc createShader*(source: ShaderSource): Shader =
   result.vertex = glCreateShader(GL_VERTEX_SHADER)
-  result.vertex.glShaderSource(1, source.vertex.addr, nil)
+  result.vertex.glShaderSource(1, source.vertex.unsafeAddr(), nil)
   result.vertex.glCompileShader()
   result.vertex.statusShader("vertex", source.path)
 
   result.fragment = glCreateShader(GL_FRAGMENT_SHADER)
-  result.fragment.glShaderSource(1, source.fragment.addr, nil)
+  result.fragment.glShaderSource(1, source.fragment.unsafeAddr(), nil)
   result.fragment.glCompileShader()
   result.fragment.statusShader("fragment", source.path)
 
@@ -93,3 +110,27 @@ proc getLocation*(shader: Shader, name: string): int32 =
   result = shader.id.glGetUniformLocation(name.cstring)
   if result == -1:
     echo "[warn] uniform " & name & " doesn't exist"
+
+proc setMat*(shader: Shader, location: int32, mat: var Mat4[float32]) =
+  shader.use()
+  glUniformMatrix4fv(location, 1, false, mat.caddr)
+
+proc setMat*(shader: Shader, location: int32, mat: var Mat3[float32]) =
+  shader.use()
+  glUniformMatrix3fv(location, 1, false, mat.caddr)
+
+proc setMat*(shader: Shader, location: int32, mat: var Mat2[float32]) =
+  shader.use()
+  glUniformMatrix2fv(location, 1, false, mat.caddr)
+
+proc setVec*(shader: Shader, location: int32, vec: var Vec4[float32]) =
+  shader.use()
+  glUniform4fv(location, 1, vec.caddr)
+
+proc setVec*(shader: Shader, location: int32, vec: var Vec3[float32]) =
+  shader.use()
+  glUniform4fv(location, 1, vec.caddr)
+
+proc setVec*(shader: Shader, location: int32, vec: var Vec2[float32]) =
+  shader.use()
+  glUniform4fv(location, 1, vec.caddr)

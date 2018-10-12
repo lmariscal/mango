@@ -1,8 +1,12 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-import nimgl/opengl
-import mango/[window, ioman, shader, mesh]
+import mango/[window, ioman, shader, mesh, utils]
 import glm
+
+type
+  Person = object
+    name: string
+    age: int32
 
 proc main() =
   let win = createWindow(1280, 720)
@@ -15,9 +19,11 @@ proc main() =
     indices: seq[uint32] = @[ 0'u32, 1'u32, 3'u32,
                               1'u32, 2'u32, 3'u32 ]
 
+  const
+    shader_data = readShader("res/uber.glsl")
+
   let
-    shadersrc = readShader("res/uber.glsl")
-    shadero = createShader(shadersrc)
+    shadero = createShader(shader_data)
     mesho = createMesh(vertices, indices)
     umvp = shadero.getLocation("uMVP")
 
@@ -28,11 +34,9 @@ proc main() =
     win.update()
 
     # draw
-    glClearColor(0.13f, 0.13f, 0.13f, 1.0f)
-    glClear(GL_COLOR_BUFFER_BIT)
+    clearScreen(vec3(33f).rgb())
 
-    shadero.use()
-    glUniformMatrix4fv(umvp, 1, false, mvp.caddr)
+    shadero.setMat(umvp, mvp)
     mesho.use()
 
     win.draw()

@@ -1,4 +1,4 @@
-# Copyright 2018, NimGL contributors.
+# Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
 import nimgl/glfw
 import glm
