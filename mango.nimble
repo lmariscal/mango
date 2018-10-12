@@ -8,7 +8,9 @@ srcDir      = "src"
 
 # Dependencies
 
-requires "nim >= 0.18.0", "nimgl >= 0.2.1", "glm"
+requires "nim >= 0.18.0"
+requires "nimgl >= 0.2.1"
+requires "glm"
 
 # Tasks
 

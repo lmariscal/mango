@@ -44,6 +44,8 @@ proc createWindow*(width: int32, height: int32): Window =
 
 proc update*(window: Window) =
   glfwPollEvents()
+  if keyQ.isPressed() and keyLeftControl.isPressed():
+    window.raw.setWindowShouldClose(true)
 
 proc draw*(window: Window) =
   window.raw.swapBuffers()
