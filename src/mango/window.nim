@@ -2,6 +2,7 @@
 
 import nimgl/[glfw, opengl]
 import ioman
+import logging
 import glm
 
 type
@@ -19,7 +20,7 @@ proc keyEvent(window: GLFWWindow, key: GLFWKey, scancode: int32, action: GLFWKey
 
 proc createWindow*(width: int32, height: int32): Window =
   if not glfwInitiated:
-    assert glfwInit()
+    lassert(glfwInit(), "failed to init glfw")
     glfwInitiated = true
 
   glfwDefaultWindowHints()
@@ -30,7 +31,7 @@ proc createWindow*(width: int32, height: int32): Window =
   glfwWindowHint(whResizable, GLFW_FALSE)
 
   result.raw = glfwCreateWindow(width, height, "Mango", nil, nil)
-  assert result.raw != nil
+  lassert(result.raw == nil, "failed to create window")
   result.size = vec2(width, height)
 
   windowsOpen.inc
@@ -39,7 +40,7 @@ proc createWindow*(width: int32, height: int32): Window =
   discard result.raw.setKeyCallback(keyEvent)
 
   if not glInitiated:
-    assert glInit()
+    lassert(glInit(), "failed to init opengl")
     glInitiated = true
 
 proc update*(window: Window) =

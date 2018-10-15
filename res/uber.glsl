@@ -9,7 +9,7 @@ uniform mat4 uMVP;
 
 void
 main() {
-  gl_Position = vec4(aPos, 0f, 1f) * uMVP;
+  gl_Position = vec4(aPos, 0.0f, 1.0f) * uMVP;
 }
 
 @fragment
@@ -21,5 +21,5 @@ out vec4 FragColor;
 
 void
 main() {
-  FragColor = rgba(vec3(102f, 187f, 106f));
+  FragColor = rgba(vec3(102.0f, 187.0f, 106.0f));
 }
