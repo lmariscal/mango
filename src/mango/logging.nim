@@ -1,6 +1,7 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
 import strformat, os, times, strutils, terminal
+export strformat
 
 type
   MangoAssert = object of Exception
@@ -21,11 +22,12 @@ type
   LogProc* = proc(data: LogData)
   ErrorProc* = proc(error: ErrorData): bool
 
-var logData*: seq[LogData] = @[]
-var logDisableConsole*: bool = false
-var logMinLevel*: LogLevel = llDebug
-var logProc: LogProc = nil
-var errorProc: ErrorProc = nil
+var
+  logData*: seq[LogData] = @[]
+  logDisableConsole*: bool = false
+  logMinLevel*: LogLevel = llDebug
+  logProc: LogProc = nil
+  errorProc: ErrorProc = nil
 
 proc getColor(level: LogLevel): ForegroundColor =
   case level:
@@ -61,16 +63,16 @@ proc log*(msg: string, level: LogLevel = llInfo) =
 proc debug*(msg: string) =
   log(LogData(level: llDebug, msg: msg, time: now()))
 
-proc warning*(msg: string) =
-  log(LogData(level: llWarning, msg: msg, time: now()))
+proc warning*(system: string, msg: string) =
+  log(LogData(level: llWarning, msg: "{system}: {msg}".fmt, time: now()))
 
-proc error*(msg: string) =
-  log(LogData(level: llError, msg: msg, time: now()))
+proc error*(system: string, msg: string) =
+  log(LogData(level: llError, msg: "{system}: {msg}".fmt, time: now()))
 
-proc mlog*(msg: string) =
+proc mlog*(system: string, msg: string) =
   ## Mango Log
   ## Exposed for utility reasons, not recommended to use directly nor the level Mango as it is reserved to the library.
-  log(LogData(level: llMango, msg: msg, time: now()))
+  log(LogData(level: llMango, msg: "{system}: {msg}".fmt, time: now()))
 
 proc crash*(msg: string, code: int32 = 1, close: bool = true) =
   let data = LogData(level: llCrash, msg: "{msg} [{code}]".fmt, time: now())

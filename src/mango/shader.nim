@@ -3,6 +3,7 @@
 import nimgl/opengl
 import glm
 import strutils
+import logging
 
 type
   Shader* = object
@@ -28,7 +29,7 @@ proc readShader*(path: string): ShaderSource =
   try:
     source = readFile(path)
   except:
-    echo "[error] failed to open shader \"" & path & "\""
+    error("ShaderManager", "failed to open shader \"" & path & "\"")
     return
 
   var
@@ -70,8 +71,8 @@ proc statusShader*(shader: uint32, `type`: string, path: string) =
     var length: int32
     var message = newSeq[cchar](1024)
     shader.glGetShaderInfoLog(1024, length.addr, message[0].addr)
-    echo "[error] failed to compile " & `type` & " shader \"" & path & "\":"
-    echo message.toString()
+    error("ShaderManager", "failed to compile " & `type` & " shader \"" & path & "\":")
+    error("ShaderManager", message.toString())
 
 proc createShader*(source: ShaderSource): Shader =
   result.vertex = glCreateShader(GL_VERTEX_SHADER)
@@ -95,8 +96,10 @@ proc createShader*(source: ShaderSource): Shader =
     var length: int32
     var message = newSeq[cchar](1024)
     result.id.glGetProgramInfoLog(1024, length.addr, message[0].addr)
-    echo "[error] faield to link shader program \"" & source.path & "\""
-    echo message.toString()
+    error("ShaderManager", "failed to link shader program \"{source.path}\"".fmt)
+    error("ShaderManager", message.toString())
+
+  mlog("ShaderManager", "loading {source.path} shader".fmt)
 
 proc createShader*(file: string): Shader =
   createShader(readShader(file))
@@ -109,7 +112,7 @@ proc getLocation*(shader: Shader, name: string): int32 =
   shader.use()
   result = shader.id.glGetUniformLocation(name.cstring)
   if result == -1:
-    echo "[warn] uniform " & name & " doesn't exist"
+    error("ShaderManager", "uniform " & name & " doesn't exist")
 
 proc setMat*(shader: Shader, location: int32, mat: var Mat4[float32]) =
   shader.use()

@@ -31,7 +31,7 @@ proc createWindow*(width: int32, height: int32): Window =
   glfwWindowHint(whResizable, GLFW_FALSE)
 
   result.raw = glfwCreateWindow(width, height, "Mango", nil, nil)
-  lassert(result.raw == nil, "failed to create window")
+  lassert(result.raw != nil, "failed to create window")
   result.size = vec2(width, height)
 
   windowsOpen.inc

@@ -14,9 +14,8 @@ proc main() =
   else:
     logMinLevel = llMango
 
-  mlog("starting...")
+  log("starting...")
   let win = createWindow(800, 600)
-  mlog("created glfw window")
 
   var
     vertices: seq[float32] = @[ -0.5f,  0.5f,
