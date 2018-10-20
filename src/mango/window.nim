@@ -15,10 +15,14 @@ var
   glfwInitiated: bool = false
   glInitiated: bool = false
 
+proc glfwErrorEvent(error: GLFWErrorCode, description: cstring): void {.cdecl.} =
+  error("GLFW", $description)
+
 proc keyEvent(window: GLFWWindow, key: GLFWKey, scancode: int32, action: GLFWKeyAction, mods: GLFWKeyMod): void {.cdecl.} =
   ioman.keyEvent(key, action != kaRelease)
 
 proc createWindow*(width: int32, height: int32): Window =
+  discard glfwSetErrorCallback(glfwErrorEvent)
   if not glfwInitiated:
     lassert(glfwInit(), "failed to init glfw")
     glfwInitiated = true

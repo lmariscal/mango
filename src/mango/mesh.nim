@@ -1,19 +1,20 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
 import nimgl/opengl
+import glm
 
 type
   Mesh* = object
-    # vertices: seq[float32]
-    # indices: seq[uint32]
+    vertices*: seq[float32]
+    indices*: seq[uint32]
     vao*: uint32
     ebo*: uint32
     vbo*: uint32
     len*: tuple[vertices: int32, indices: int32]
 
 proc createMesh*(vertices: var seq[float32], indices: var seq[uint32]): Mesh =
-  # result.vertices = vertices
-  # result.indices = indices
+  result.vertices = vertices
+  result.indices = indices
   glGenBuffers(1, result.vbo.addr)
   glGenBuffers(1, result.ebo.addr)
   glGenVertexArrays(1, result.vao.addr)
@@ -31,6 +32,9 @@ proc createMesh*(vertices: var seq[float32], indices: var seq[uint32]): Mesh =
 
   result.len.vertices = vertices.len.int32
   result.len.indices = indices.len.int32
+
+proc calcNormals*(mesh: Mesh): seq[Vec3[float32]] =
+  nil
 
 proc use*(mesh: Mesh) =
   glBindVertexArray(mesh.vao)
