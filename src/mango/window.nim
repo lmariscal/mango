@@ -47,6 +47,8 @@ proc createWindow*(width: int32, height: int32): Window =
     lassert(glInit(), "failed to init opengl")
     glInitiated = true
 
+  glEnable(GL_DEPTH_TEST)
+
 proc update*(window: Window) =
   glfwPollEvents()
   if keyQ.isPressed() and keyLeftControl.isPressed():
@@ -54,7 +56,7 @@ proc update*(window: Window) =
 
 proc clearScreen*(color: Vec3) =
   glClearColor(color.r, color.g, color.b, 1.0f)
-  glClear(GL_COLOR_BUFFER_BIT)
+  glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
 proc draw*(window: Window) =
   window.raw.swapBuffers()

@@ -24,11 +24,17 @@ proc createMesh*(vertices: var seq[float32], indices: var seq[uint32]): Mesh =
   glBindBuffer(GL_ARRAY_BUFFER, result.vbo)
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, result.ebo)
 
+  if indices.len == 0:
+    for i in 0 ..< vertices.len:
+      indices.add(i.uint32)
+
   glBufferData(GL_ARRAY_BUFFER, int32(float32.sizeof * vertices.len), vertices[0].addr, GL_STATIC_DRAW)
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, int32(uint32.sizeof * indices.len), indices[0].addr, GL_STATIC_DRAW)
 
   glEnableVertexAttribArray(0)
-  glVertexAttribPointer(0, 2, EGL_FLOAT, false, float32.sizeof * 2, nil)
+  glEnableVertexAttribArray(1)
+  glVertexAttribPointer(0, 3, EGL_FLOAT, false, float32.sizeof * 5, cast[pointer](0))
+  glVertexAttribPointer(1, 2, EGL_FLOAT, false, float32.sizeof * 5, cast[pointer](3 * float32.sizeof))
 
   result.len.vertices = vertices.len.int32
   result.len.indices = indices.len.int32
