@@ -60,6 +60,12 @@ proc log*(data: LogData) =
 proc log*(msg: string, level: LogLevel = llInfo) =
   log(LogData(level: level, msg: msg, time: now()))
 
+proc log*(msg: varargs[string, `$`]) =
+  var joined = ""
+  for m in msg:
+    joined.add(m)
+  log(LogData(level: llInfo, msg: joined, time: now()))
+
 proc debug*(msg: string) =
   log(LogData(level: llDebug, msg: msg, time: now()))
 
@@ -73,6 +79,14 @@ proc mlog*(system: string, msg: string) =
   ## Mango Log
   ## Exposed for utility reasons, not recommended to use directly nor the level Mango as it is reserved to the library.
   log(LogData(level: llMango, msg: "{system}: {msg}".fmt, time: now()))
+
+proc mlog*(system: string, msg: varargs[string, `$`]) =
+  ## Mango Log
+  ## Exposed for utility reasons, not recommended to use directly nor the level Mango as it is reserved to the library.
+  var joined = ""
+  for m in msg:
+    joined.add(m)
+  log(LogData(level: llMango, msg: "{system}: {joined}".fmt, time: now()))
 
 proc crash*(msg: string, code: int32 = 1, close: bool = true) =
   let data = LogData(level: llCrash, msg: "{msg} [{code}]".fmt, time: now())
