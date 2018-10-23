@@ -5,6 +5,11 @@ author      = "Leonardo Mariscal"
 description = "Graphics engine made with NimGL"
 license     = "MIT"
 srcDir      = "src"
+skipDirs    = @["examples"]
+
+bin         = @[
+  "examples/rotating_cube"
+]
 
 # Dependencies
 
@@ -15,8 +20,6 @@ requires "msgpack4nim >= 0.2.7"
 
 # Tasks
 
-task test, "test the engine":
-  exec("nim c -r app/app.nim")
-
-task release, "make a release build":
-  exec("nim c -d:release --assertions:on -r app/app.nim")
+task run, "run the examples":
+  for binary in bin:
+    exec("nim c -r " & binary & ".nim")

@@ -1,6 +1,6 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-import mango/[window, ioman, shader, mesh, utils, logging]
+import ../src/mango/[window, ioman, shader, mesh, utils, logging]
 import nimgl/stb_image
 import nimgl/opengl
 import glm
@@ -17,7 +17,7 @@ proc main() =
     logMinLevel = llMango
 
   log("starting...")
-  let win = createWindow(800, 600)
+  let win = createWindow(800, 600, "Rotating Cube")
 
   var
     vertices: seq[float32] = @[
@@ -66,7 +66,7 @@ proc main() =
     indices: seq[uint32] = @[]
 
   const
-    shaderData = readShader("res/shaders/uber.glsl")
+    shaderData = readShader("examples/res/shaders/rotating_cube.glsl")
 
   var
     shadero = createShader(shaderData)
@@ -86,7 +86,7 @@ proc main() =
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32);
 
-  let img = stbi_load("res/images/box.jpg", 3)
+  let img = stbi_load("examples/res/images/box.jpg", 3)
   log("width: {img.width}, height: {img.height}".fmt)
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img.width, img.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data);

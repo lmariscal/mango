@@ -21,7 +21,7 @@ proc glfwErrorEvent(error: GLFWErrorCode, description: cstring): void {.cdecl.} 
 proc keyEvent(window: GLFWWindow, key: GLFWKey, scancode: int32, action: GLFWKeyAction, mods: GLFWKeyMod): void {.cdecl.} =
   ioman.keyEvent(key, action != kaRelease)
 
-proc createWindow*(width: int32, height: int32): Window =
+proc createWindow*(width: int32, height: int32, title: string = "Mango"): Window =
   discard glfwSetErrorCallback(glfwErrorEvent)
   if not glfwInitiated:
     lassert(glfwInit(), "failed to init glfw")
@@ -34,7 +34,7 @@ proc createWindow*(width: int32, height: int32): Window =
   glfwWindowHint(whOpenglProfile, GLFW_OPENGL_CORE_PROFILE)
   glfwWindowHint(whResizable, GLFW_FALSE)
 
-  result.raw = glfwCreateWindow(width, height, "Mango", nil, nil)
+  result.raw = glfwCreateWindow(width, height, title, nil, nil)
   lassert(result.raw != nil, "failed to create window")
   result.size = vec2(width, height)
 
