@@ -2,14 +2,11 @@
 
 @vertex
 #version 330 core
-
 in vec3 iPos;
-in vec2 iTexCoord;
-in vec3 iNormals;
+in vec3 iNormal;
 
-out vec2 oTexCoord;
-out vec3 oNormals;
 out vec3 oFragPos;
+out vec3 oNormal;
 
 uniform mat4 uModel;
 uniform mat4 uView;
@@ -17,35 +14,33 @@ uniform mat4 uProjection;
 
 void
 main() {
-  oFragPos    = vec3(uModel * vec4(iPos, 1.0f));
-  oTexCoord   = iTexCoord;
-  oNormals    = iNormals;
-
-  gl_Position = uProjection * uView * vec4(oFragPos, 1.0f);
+  oFragPos = vec3(uModel * vec4(iPos, 1.0));
+  oNormal = iNormal;  
+  
+  gl_Position = uProjection * uView * vec4(oFragPos, 1.0);
 }
 
 @fragment
 #version 330 core
-
-in vec2 oTexCoord;
-in vec3 oNormals;
-in vec3 oFragPos;
-
 out vec4 FragColor;
 
-uniform sampler2D uTexture;
-uniform vec3 uLightPos;
+in vec3 oNormal;  
+in vec3 oFragPos;  
+  
+uniform vec3 uLightPos; 
 
 @include utils
 
 void
 main() {
-  vec4 ambient = rgba(vec3(255.0f, 249.0f, 196.0f)) * 0.1f;
+  float ambientStrength = 0.1;
+  vec3 ambient = ambientStrength * vec3(1.0f, 1.0f, 1.0f);
 
-  vec3  norm     = normalize(oNormals);
+  vec3  norm     = normalize(oNormal);
   vec3  lightDir = normalize(uLightPos - oFragPos);
-  float diff     = max(dot(norm, lightDir), 0.0f);
-  vec4  diffuse  = vec4(diff * vec3(1.0f, 1.0f, 1.0f), 1.0f);  // vec3 is light color
-
-  FragColor = texture(uTexture, oTexCoord) * (diffuse);
-}
+  float diff     = max(dot(norm, lightDir), 0.0);
+  vec3  light  = diff * vec3(1.0f, 1.0f, 1.0f);
+          
+  vec3 result = (ambient + light) * rgb(vec3(129.0f, 199.0f, 132.0f));
+  FragColor = vec4(result, 1.0);
+} 

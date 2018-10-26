@@ -19,7 +19,7 @@ proc iSize(num: int): int32 =
   int32(int32.sizeof * num)
 
 # @TODO: Make the inputs variable
-proc createMesh*(vertices: var seq[float32], indices: var seq[uint32], normals: var seq[float32]): Mesh =
+proc createMesh*(vertices: var seq[float32], indices: var seq[uint32]): Mesh =
   result.vertices = vertices
   result.indices = indices
   glGenBuffers(1, result.vbo.addr)
@@ -36,16 +36,13 @@ proc createMesh*(vertices: var seq[float32], indices: var seq[uint32], normals: 
       indices.add(i.uint32)
 
   glBufferData(GL_ARRAY_BUFFER, fSize(vertices.len), vertices[0].addr, GL_STATIC_DRAW)
-  glBufferSubData(GL_ARRAY_BUFFER, fSize(vertices.len), fSize(normals.len), normals[0].addr)
 
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, iSize(indices.len), indices[0].addr, GL_STATIC_DRAW)
 
   glEnableVertexAttribArray(0)
   glEnableVertexAttribArray(1)
-  glEnableVertexAttribArray(2)
-  glVertexAttribPointer(0, 3, EGL_FLOAT, false, fSize(5), cast[pointer](0))
-  glVertexAttribPointer(1, 2, EGL_FLOAT, false, fSize(5), cast[pointer](fSize(3)))
-  glVertexAttribPointer(2, 3, EGL_FLOAT, false, 0, cast[pointer](fSize(vertices.len)))
+  glVertexAttribPointer(0, 3, EGL_FLOAT, false, fSize(6), cast[pointer](0))
+  glVertexAttribPointer(1, 3, EGL_FLOAT, false, fSize(6), cast[pointer](fSize(3)))
 
   result.len.vertices = vertices.len.int32
   result.len.indices = indices.len.int32
@@ -55,7 +52,8 @@ proc calcNormals*(mesh: Mesh): seq[float32] =
 
 proc use*(mesh: Mesh) =
   glBindVertexArray(mesh.vao)
-  glDrawElements(GL_TRIANGLES, mesh.len.indices, GL_UNSIGNED_INT, nil)
+  # glDrawElements(GL_TRIANGLES, mesh.len.indices, GL_UNSIGNED_INT, nil)
+  glDrawArrays(GL_TRIANGLES, 0, 36);
 
 proc clean*(mesh: var Mesh) =
   glDeleteBuffers(1, mesh.vbo.addr)
