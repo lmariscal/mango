@@ -21,93 +21,90 @@ proc main() =
 
   var
     vertices: seq[float32] = @[
-     -0.5f, -0.5f, -0.5f,
-      0.5f, -0.5f, -0.5f,
-      0.5f,  0.5f, -0.5f,
-      0.5f,  0.5f, -0.5f,
-     -0.5f,  0.5f, -0.5f,
-     -0.5f, -0.5f, -0.5f,
-
-     -0.5f, -0.5f,  0.5f,
-      0.5f, -0.5f,  0.5f,
-      0.5f,  0.5f,  0.5f,
-      0.5f,  0.5f,  0.5f,
-     -0.5f,  0.5f,  0.5f,
-     -0.5f, -0.5f,  0.5f,
-
-     -0.5f,  0.5f,  0.5f,
-     -0.5f,  0.5f, -0.5f,
-     -0.5f, -0.5f, -0.5f,
-     -0.5f, -0.5f, -0.5f,
-     -0.5f, -0.5f,  0.5f,
-     -0.5f,  0.5f,  0.5f,
-
-      0.5f,  0.5f,  0.5f,
-      0.5f,  0.5f, -0.5f,
-      0.5f, -0.5f, -0.5f,
-      0.5f, -0.5f, -0.5f,
-      0.5f, -0.5f,  0.5f,
-      0.5f,  0.5f,  0.5f,
-
-     -0.5f, -0.5f, -0.5f,
-      0.5f, -0.5f, -0.5f,
-      0.5f, -0.5f,  0.5f,
-      0.5f, -0.5f,  0.5f,
-     -0.5f, -0.5f,  0.5f,
-     -0.5f, -0.5f, -0.5f,
-
-     -0.5f,  0.5f, -0.5f,
-      0.5f,  0.5f, -0.5f,
-      0.5f,  0.5f,  0.5f,
-      0.5f,  0.5f,  0.5f,
-     -0.5f,  0.5f,  0.5f,
-     -0.5f,  0.5f, -0.5f
-    ]
-    uvs: seq[float32] = @[
-      0.0f, 0.0f,
-      1.0f, 0.0f,
-      1.0f, 1.0f,
-      1.0f, 1.0f,
-      0.0f, 1.0f,
-      0.0f, 0.0f,
-
-      0.0f, 0.0f,
-      1.0f, 0.0f,
-      1.0f, 1.0f,
-      1.0f, 1.0f,
-      0.0f, 1.0f,
-      0.0f, 0.0f,
-
-      1.0f, 0.0f,
-      1.0f, 1.0f,
-      0.0f, 1.0f,
-      0.0f, 1.0f,
-      0.0f, 0.0f,
-      1.0f, 0.0f,
-
-      1.0f, 0.0f,
-      1.0f, 1.0f,
-      0.0f, 1.0f,
-      0.0f, 1.0f,
-      0.0f, 0.0f,
-      1.0f, 0.0f,
-
-      0.0f, 1.0f,
-      1.0f, 1.0f,
-      1.0f, 0.0f,
-      1.0f, 0.0f,
-      0.0f, 0.0f,
-      0.0f, 1.0f,
-
-      0.0f, 1.0f,
-      1.0f, 1.0f,
-      1.0f, 0.0f,
-      1.0f, 0.0f,
-      0.0f, 0.0f,
-      0.0f, 1.0f
+     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+      0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+ 
+     -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+      0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+     -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+     -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+ 
+     -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ 
+      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+      0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+      0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ 
+     -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+      0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+      0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ 
+     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     ]
     normals: seq[float32] = @[
-      1.0f
+      0.0f,  0.0f, -1.0f,
+      0.0f,  0.0f, -1.0f, 
+      0.0f,  0.0f, -1.0f, 
+      0.0f,  0.0f, -1.0f, 
+      0.0f,  0.0f, -1.0f, 
+      0.0f,  0.0f, -1.0f, 
+  
+      0.0f,  0.0f, 1.0f,
+      0.0f,  0.0f, 1.0f,
+      0.0f,  0.0f, 1.0f,
+      0.0f,  0.0f, 1.0f,
+      0.0f,  0.0f, 1.0f,
+      0.0f,  0.0f, 1.0f,
+  
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+  
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+  
+      0.0f, -1.0f,  0.0f,
+      0.0f, -1.0f,  0.0f,
+      0.0f, -1.0f,  0.0f,
+      0.0f, -1.0f,  0.0f,
+      0.0f, -1.0f,  0.0f,
+      0.0f, -1.0f,  0.0f,
+  
+      0.0f,  1.0f,  0.0f,
+      0.0f,  1.0f,  0.0f,
+      0.0f,  1.0f,  0.0f,
+      0.0f,  1.0f,  0.0f,
+      0.0f,  1.0f,  0.0f,
+      0.0f,  1.0f,  0.0f
     ]
 
     indices: seq[uint32] = @[]
@@ -116,10 +113,13 @@ proc main() =
     shaderData = readShader("examples/res/shaders/rotating_cube.glsl")
 
   var
-    shadero = createShader(shaderData)
-    mesho = createMesh(vertices, indices, uvs, normals)
-    umvp = shadero.getLocation("uMVP")
-    projection = ortho(-4f, 4f, -3f, 3f, -1f, 1f)
+    shadero     = createShader(shaderData)
+    mesho       = createMesh(vertices, indices, normals)
+    uModel      = shadero.getLocation("uModel")
+    uView       = shadero.getLocation("uView")
+    uProjection = shadero.getLocation("uProjection")
+    uLightPos   = shadero.getLocation("uLightPos")
+    projection  = ortho(-4f, 4f, -3f, 3f, -1f, 1f)
 
   # Tex Load
 
@@ -142,6 +142,7 @@ proc main() =
   img.data.stbi_image_free()
 
   var rot: float32 = 0
+  var lightPos = vec3(1.2f, 1.0f, 2.0f)
 
   while win.isOpen():
     # updat
@@ -154,12 +155,17 @@ proc main() =
     glBindTexture(GL_TEXTURE_2D, tex)
 
     var trans = mat4identity[float32]()
+    var view  = mat4identity[float32]()
     trans = rotate(trans, rot.radians(), vec3(1f, 1f, 0f))
+
     rot += 1f
     if rot >= 360:
       rot = 0f
-    var mvp = projection * trans
-    shadero.setMat(umvp, mvp)
+
+    shadero.setMat(uModel, trans)
+    shadero.setMat(uView, view)
+    shadero.setMat(uProjection, projection)
+    shadero.setVec(uLightPos, lightPos)
 
     mesho.use()
 
