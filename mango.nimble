@@ -7,7 +7,7 @@ license     = "MIT"
 srcDir      = "src"
 skipDirs    = @["examples"]
 
-bin         = @[
+let exs     = @[
   "examples/rotating_cube"
 ]
 
@@ -21,5 +21,5 @@ requires "msgpack4nim >= 0.2.7"
 # Tasks
 
 task run, "run the examples":
-  for binary in bin:
-    exec("nim c -r " & binary & ".nim")
+  for ex in exs:
+    exec("nim c -r " & ex & ".nim")

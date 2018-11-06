@@ -24,6 +24,7 @@ proc getMousePos*(): Vec2f =
   mousePos
 
 proc keyEvent*(key: GLFWKey, pressed: bool) =
+  if keys.len < key.ord or key.ord < 0: return
   if keys[key.ord] and not pressed:
     rKeys[key.ord] = true
   elif not keys[key.ord] and pressed:

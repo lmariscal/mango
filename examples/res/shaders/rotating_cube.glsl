@@ -41,6 +41,6 @@ main() {
   float diff     = max(dot(norm, lightDir), 0.0);
   vec3  light  = diff * vec3(1.0f, 1.0f, 1.0f);
           
-  vec3 result = (ambient + light) * rgb(vec3(129.0f, 199.0f, 132.0f));
-  FragColor = vec4(result, 1.0);
+  // vec3 result = (ambient + light) * rgb(vec3(129.0f, 199.0f, 132.0f));
+  FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 } 

@@ -17,7 +17,7 @@ proc main() =
     logMinLevel = llMango
 
   log("starting...")
-  let win = createWindow(800, 600, "Rotating Cube")
+  let win = newWindow(800, 600, "Rotating Cube")
 
   var
     vertices: seq[float32] = @[
@@ -91,7 +91,6 @@ proc main() =
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32);
 
   let img = stbi_load("examples/res/images/box.jpg", 3)
-  log("width: {img.width}, height: {img.height}".fmt)
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img.width, img.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data);
   glGenerateMipmap(GL_TEXTURE_2D)
@@ -126,6 +125,8 @@ proc main() =
     shadero.setVec(uLightPos, lightPos)
 
     mesho.use()
+
+    igShowDemoWindow(nil)
 
     win.draw()
 

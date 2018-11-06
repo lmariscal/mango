@@ -36,7 +36,6 @@ proc createMesh*(vertices: var seq[float32], indices: var seq[uint32]): Mesh =
       indices.add(i.uint32)
 
   glBufferData(GL_ARRAY_BUFFER, fSize(vertices.len), vertices[0].addr, GL_STATIC_DRAW)
-
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, iSize(indices.len), indices[0].addr, GL_STATIC_DRAW)
 
   glEnableVertexAttribArray(0)
@@ -52,8 +51,7 @@ proc calcNormals*(mesh: Mesh): seq[float32] =
 
 proc use*(mesh: Mesh) =
   glBindVertexArray(mesh.vao)
-  # glDrawElements(GL_TRIANGLES, mesh.len.indices, GL_UNSIGNED_INT, nil)
-  glDrawArrays(GL_TRIANGLES, 0, 36);
+  glDrawElements(GL_TRIANGLES, mesh.len.indices, GL_UNSIGNED_INT, nil)
 
 proc clean*(mesh: var Mesh) =
   glDeleteBuffers(1, mesh.vbo.addr)
