@@ -10,7 +10,6 @@ type
     vao*: uint32
     ebo*: uint32
     vbo*: uint32
-    len*: tuple[vertices: int32, indices: int32]
 
 proc fSize(num: int): int32 =
   int32(float32.sizeof * num)
@@ -18,40 +17,45 @@ proc fSize(num: int): int32 =
 proc iSize(num: int): int32 =
   int32(int32.sizeof * num)
 
-# @TODO: Make the inputs variable
-proc createMesh*(vertices: var seq[float32], indices: var seq[uint32]): Mesh =
+proc createMesh*(shader: uint32, vertices: var seq[float32], indices: var seq[uint32]): Mesh =
   result.vertices = vertices
   result.indices = indices
+  glGenVertexArrays(1, result.vao.addr)
   glGenBuffers(1, result.vbo.addr)
   glGenBuffers(1, result.ebo.addr)
-  glGenVertexArrays(1, result.vao.addr)
 
   glBindVertexArray(result.vao)
-
-  glBindBuffer(GL_ARRAY_BUFFER, result.vbo)
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, result.ebo)
 
   if indices.len == 0:
     for i in 0 ..< vertices.len:
       indices.add(i.uint32)
 
+  glBindBuffer(GL_ARRAY_BUFFER, result.vbo)
   glBufferData(GL_ARRAY_BUFFER, fSize(vertices.len), vertices[0].addr, GL_STATIC_DRAW)
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, result.ebo)
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, iSize(indices.len), indices[0].addr, GL_STATIC_DRAW)
 
-  glEnableVertexAttribArray(0)
-  glEnableVertexAttribArray(1)
-  glVertexAttribPointer(0, 3, EGL_FLOAT, false, fSize(6), cast[pointer](0))
-  glVertexAttribPointer(1, 3, EGL_FLOAT, false, fSize(6), cast[pointer](fSize(3)))
+  glUseProgram(shader)
 
-  result.len.vertices = vertices.len.int32
-  result.len.indices = indices.len.int32
+  var iPos = shader.glGetAttribLocation("vPos").uint32
+  var iUVs = shader.glGetAttribLocation("vUVs").uint32
+  var iNormals = shader.glGetAttribLocation("vNormals").uint32
+
+  glEnableVertexAttribArray(iPos)
+  glEnableVertexAttribArray(iUVs)
+  glEnableVertexAttribArray(iNormals)
+
+  glVertexAttribPointer(iPos, 3, EGL_FLOAT, false, fSize(8), cast[pointer](0))
+  glVertexAttribPointer(iUVs, 2, EGL_FLOAT, false, fSize(8), cast[pointer](fSize(3)))
+  glVertexAttribPointer(iNormals, 3, EGL_FLOAT, false, fSize(8), cast[pointer](fSize(5)))
 
 proc calcNormals*(mesh: Mesh): seq[float32] =
   nil
 
 proc use*(mesh: Mesh) =
   glBindVertexArray(mesh.vao)
-  glDrawElements(GL_TRIANGLES, mesh.len.indices, GL_UNSIGNED_INT, nil)
+  glDrawElements(GL_TRIANGLES, mesh.indices.len.int32, GL_UNSIGNED_INT, cast[pointer](0))
 
 proc clean*(mesh: var Mesh) =
   glDeleteBuffers(1, mesh.vbo.addr)

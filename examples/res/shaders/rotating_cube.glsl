@@ -2,11 +2,12 @@
 
 @vertex
 #version 330 core
-in vec3 iPos;
-in vec3 iNormal;
+in vec3 vPos;
+in vec3 vUVs;
+in vec3 vNormals;
 
-out vec3 oFragPos;
-out vec3 oNormal;
+out vec3 fPos;
+out vec3 fNormal;
 
 uniform mat4 uModel;
 uniform mat4 uView;
@@ -14,18 +15,18 @@ uniform mat4 uProjection;
 
 void
 main() {
-  oFragPos = vec3(uModel * vec4(iPos, 1.0));
-  oNormal = iNormal;  
+  fPos = vec3(uModel * vec4(vPos, 1.0));
+  fNormal = vNormals;
   
-  gl_Position = uProjection * uView * vec4(oFragPos, 1.0);
+  gl_Position = uProjection * uView * vec4(fPos, 1.0);
 }
 
 @fragment
 #version 330 core
-out vec4 FragColor;
+out vec4 gColor;
 
-in vec3 oNormal;  
-in vec3 oFragPos;  
+in vec3 fNormal;  
+in vec3 fPos;  
   
 uniform vec3 uLightPos; 
 
@@ -36,11 +37,11 @@ main() {
   float ambientStrength = 0.1;
   vec3 ambient = ambientStrength * vec3(1.0f, 1.0f, 1.0f);
 
-  vec3  norm     = normalize(oNormal);
-  vec3  lightDir = normalize(uLightPos - oFragPos);
+  vec3  norm     = normalize(fNormal);
+  vec3  lightDir = normalize(uLightPos - fPos);
   float diff     = max(dot(norm, lightDir), 0.0);
-  vec3  light  = diff * vec3(1.0f, 1.0f, 1.0f);
+  vec3  light    = diff * vec3(1.0f, 1.0f, 1.0f);
           
   // vec3 result = (ambient + light) * rgb(vec3(129.0f, 199.0f, 132.0f));
-  FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+  gColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 } 

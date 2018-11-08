@@ -8,7 +8,8 @@ srcDir      = "src"
 skipDirs    = @["examples"]
 
 let exs     = @[
-  "examples/rotating_cube"
+  "examples/rotating_cube",
+  "examples/rectangle"
 ]
 
 # Dependencies
@@ -19,6 +20,12 @@ requires "glm >= 1.1.1"
 requires "msgpack4nim >= 0.2.7"
 
 # Tasks
+
+task rotating_cube, "run the rotating cube example":
+  exec("nim c -r " & exs[0] & ".nim")
+
+task rectangle, "run the rectangle example":
+  exec("nim c -r " & exs[1] & ".nim")
 
 task run, "run the examples":
   for ex in exs:
