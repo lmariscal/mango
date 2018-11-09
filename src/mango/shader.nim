@@ -59,7 +59,7 @@ proc readShader*(path: string): ShaderSource =
     if index == 0: other.add(line & "\n")
     elif index == 1: vertex.add(line & "\n")
     elif index == 2: fragment.add(line & "\n")
-  
+
   result.other = other
   result.vertex = vertex
   result.fragment = fragment
@@ -114,6 +114,13 @@ proc getLocation*(shader: Shader, name: string): int32 =
   if result == -1:
     error("ShaderManager", "uniform " & name & " doesn't exist")
 
+# @TODO: Make a cache for this
+proc getAttrib*(shader: Shader, name: string): int32 =
+  shader.use()
+  result = shader.id.glGetAttribLocation(name.cstring)
+  if result == -1:
+    error("ShaderManager", "attrib " & name & " doesn't exist")
+
 proc setMat*(shader: Shader, location: int32, mat: var Mat4[float32]) =
   shader.use()
   glUniformMatrix4fv(location, 1, false, mat.caddr)
@@ -132,8 +139,12 @@ proc setVec*(shader: Shader, location: int32, vec: var Vec4[float32]) =
 
 proc setVec*(shader: Shader, location: int32, vec: var Vec3[float32]) =
   shader.use()
-  glUniform4fv(location, 1, vec.caddr)
+  glUniform3fv(location, 1, vec.caddr)
 
 proc setVec*(shader: Shader, location: int32, vec: var Vec2[float32]) =
   shader.use()
-  glUniform4fv(location, 1, vec.caddr)
+  glUniform2fv(location, 1, vec.caddr)
+
+proc setInt*(shader: Shader, location: int32, val: int32) =
+  shader.use()
+  glUniform1i(location, val)

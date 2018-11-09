@@ -28,19 +28,19 @@ proc createMesh*(shader: uint32, vertices: var seq[float32], indices: var seq[ui
 
   if indices.len == 0:
     for i in 0 ..< vertices.len:
-      indices.add(i.uint32)
+      result.indices.add(i.uint32)
 
   glBindBuffer(GL_ARRAY_BUFFER, result.vbo)
   glBufferData(GL_ARRAY_BUFFER, fSize(vertices.len), vertices[0].addr, GL_STATIC_DRAW)
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, result.ebo)
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, iSize(indices.len), indices[0].addr, GL_STATIC_DRAW)
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, iSize(result.indices.len), result.indices[0].addr, GL_STATIC_DRAW)
 
   glUseProgram(shader)
 
-  var iPos = shader.glGetAttribLocation("vPos").uint32
-  var iUVs = shader.glGetAttribLocation("vUVs").uint32
-  var iNormals = shader.glGetAttribLocation("vNormals").uint32
+  var iPos = 0'u32
+  var iUVs = 1'u32
+  var iNormals = 2'u32
 
   glEnableVertexAttribArray(iPos)
   glEnableVertexAttribArray(iUVs)

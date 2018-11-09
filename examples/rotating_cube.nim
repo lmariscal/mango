@@ -9,6 +9,10 @@ type
   Person = object
     name: string
     age: int32
+  ShaderType = enum
+    stGoraud = "Goraud Shader"
+    stPhong = "Phong Shader"
+    stNormals = "Normal Shader"
 
 proc main() =
   when defined(release):
@@ -17,16 +21,16 @@ proc main() =
     logMinLevel = llMango
 
   log("starting...")
-  let win = newWindow(800, 600, "Rotating Cube")
+  let win = newWindow(1280, 720, "Rotating Cube")
 
   var
     vertices: seq[float32] = @[
      -0.5f, -0.5f, -0.5f,   0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-      0.5f, -0.5f, -0.5f,   1.0f, 0.0f,   0.0f,  0.0f, -1.0f, 
-      0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f,  0.0f, -1.0f, 
-      0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f,  0.0f, -1.0f, 
-     -0.5f,  0.5f, -0.5f,   0.0f, 1.0f,   0.0f,  0.0f, -1.0f, 
-     -0.5f, -0.5f, -0.5f,   0.0f, 0.0f,   0.0f,  0.0f, -1.0f, 
+      0.5f, -0.5f, -0.5f,   1.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+      0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f,  0.0f, -1.0f,
+      0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f,  0.0f, -1.0f,
+     -0.5f,  0.5f, -0.5f,   0.0f, 1.0f,   0.0f,  0.0f, -1.0f,
+     -0.5f, -0.5f, -0.5f,   0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
 
      -0.5f, -0.5f,  0.5f,   0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
       0.5f, -0.5f,  0.5f,   1.0f, 0.0f,   0.0f,  0.0f,  1.0f,
@@ -67,35 +71,85 @@ proc main() =
     indices: seq[uint32] = @[]
 
   const
-    shaderData = readShader("examples/res/shaders/color.glsl")
+    goraudData  = readShader("examples/res/shaders/goraud.glsl")
+    phongData   = readShader("examples/res/shaders/phong.glsl")
+    normalsData = readShader("examples/res/shaders/normals.glsl")
 
   var
-    shadero     = createShader(shaderData)
-    mesho       = createMesh(shadero.id, vertices, indices)
-    uModel      = shadero.getLocation("uModel")
-    uView       = shadero.getLocation("uView")
-    uProjection = shadero.getLocation("uProjection")
-    uLightPos   = shadero.getLocation("uLightPos")
-    projection  = ortho(-4f, 4f, -3f, 3f, -1f, 1f)
+    goraud  = createShader(goraudData)
+    phong   = createShader(phongData)
+    normals = createShader(normalsData)
+    mesho   = createMesh(goraud.id, vertices, indices)
 
-  # Tex Load
+    uGModel       = goraud.getLocation("uModel")
+    uGView        = goraud.getLocation("uView")
+    uGProjection  = goraud.getLocation("uProjection")
+    uGLightPos    = goraud.getLocation("uLightPos")
+    uGLightColor  = goraud.getLocation("uLightColor")
+    uGObjectColor = goraud.getLocation("uObjectColor")
 
-  var tex: uint32
-  glGenTextures(1, tex.addr);
-  glBindTexture(GL_TEXTURE_2D, tex);
+    uPModel       = phong.getLocation("uModel")
+    uPView        = phong.getLocation("uView")
+    uPProjection  = phong.getLocation("uProjection")
+    uPLightPos    = phong.getLocation("uLightPos")
+    uPLightColor  = phong.getLocation("uLightColor")
+    uPObjectColor = phong.getLocation("uObjectColor")
+
+    uNModel       = normals.getLocation("uModel")
+    uNView        = normals.getLocation("uView")
+    uNProjection  = normals.getLocation("uProjection")
+    uNLightPos    = normals.getLocation("uLightPos")
+    uNLightColor  = normals.getLocation("uLightColor")
+    uNObjectColor = normals.getLocation("uObjectColor")
+    uNTex         = normals.getLocation("uTex")
+    uNNormal      = normals.getLocation("uNormal")
+
+    projection  = perspective(radians(45.0f), 1280.0f / 720.0f, 0.1f, 1000.0f)
+    lightColor  = vec3(0.98f)
+    objectColor = vec3(1.0f)
+    shaderType  = stNormals
+
+  # Tex Diffuse Load
+
+  var tex_diffuse: uint32
+  glGenTextures(1, tex_diffuse.addr);
+  glBindTexture(GL_TEXTURE_2D, tex_diffuse);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.int32);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.int32);
-
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32);
 
-  let img = stbi_load("examples/res/images/box.jpg", 3)
+  let img_diffuse = stbi_load("examples/res/images/brickwall.jpg", 3)
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img.width, img.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img_diffuse.width, img_diffuse.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_diffuse.data);
   glGenerateMipmap(GL_TEXTURE_2D)
 
-  img.data.stbi_image_free()
+  img_diffuse.data.stbi_image_free()
+
+  # End Diffuse
+  # Tex Normal Load
+
+  var tex_normal: uint32
+  glGenTextures(1, tex_normal.addr);
+  glBindTexture(GL_TEXTURE_2D, tex_normal);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.int32);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.int32);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32);
+
+  let img_normal = stbi_load("examples/res/images/brickwall_normal.jpg", 3)
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img_normal.width, img_normal.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_normal.data);
+  glGenerateMipmap(GL_TEXTURE_2D)
+
+  img_normal.data.stbi_image_free()
+
+  # End Normal
+
+  normals.setInt(uNTex, 0)
+  normals.setInt(uNNormal, 1)
 
   var rot: float32 = 30
   var lightPos = vec3(1.2f, 1.0f, 2.0f)
@@ -108,29 +162,58 @@ proc main() =
     clearScreen(vec3(33f).rgb())
 
     glActiveTexture(GL_TEXTURE0)
-    glBindTexture(GL_TEXTURE_2D, tex)
+    glBindTexture(GL_TEXTURE_2D, tex_diffuse)
+    glActiveTexture(GL_TEXTURE1)
+    glBindTexture(GL_TEXTURE_2D, tex_normal)
 
-    var trans = mat4identity[float32]()
+    var trans = mat4(1.0f).translate(0, 0, -5).rotate(rot.radians(), vec3(1f, 1f, 0f))
     var view  = mat4identity[float32]()
-    trans = rotate(trans, rot.radians(), vec3(1f, 1f, 0f))
 
     if keyR.isPressed():
       rot += 1f
       if rot >= 360:
         rot = 0f
 
-    shadero.setMat(uModel, trans)
-    shadero.setMat(uView, view)
-    shadero.setMat(uProjection, projection)
-    shadero.setVec(uLightPos, lightPos)
+    discard igSliderFloat("rotation", rot.addr, 0.0f, 360.0f)
+    if igButton($shaderType, ImVec2(x: 0, y: 0)):
+      if shaderType == stNormals:
+        shaderType = stGoraud
+      else:
+        shaderType.inc
+
+      if shaderType == stNormals:
+        objectColor = vec3(1.0f)
+      else:
+        objectColor = vec3(102.0f / 255.0f, 187.0f / 255.0f, 106.0f / 255.0f)
+
+    if shaderType == stGoraud:
+      goraud.setMat(uGModel, trans)
+      goraud.setMat(uGView, view)
+      goraud.setMat(uGProjection, projection)
+      goraud.setVec(uGLightPos, lightPos)
+      goraud.setVec(uGLightColor, lightColor)
+      goraud.setVec(uGObjectColor, objectColor)
+    elif shaderType == stPhong:
+      phong.setMat(uPModel, trans)
+      phong.setMat(uPView, view)
+      phong.setMat(uPProjection, projection)
+      phong.setVec(uPLightPos, lightPos)
+      phong.setVec(uPLightColor, lightColor)
+      phong.setVec(uPObjectColor, objectColor)
+    elif shaderType == stNormals:
+      normals.setMat(uNModel, trans)
+      normals.setMat(uNView, view)
+      normals.setMat(uNProjection, projection)
+      normals.setVec(uNLightPos, lightPos)
+      normals.setVec(uNLightColor, lightColor)
+      normals.setVec(uNObjectColor, objectColor)
 
     mesho.use()
 
-    igShowDemoWindow(nil)
-
     win.draw()
 
-  glDeleteTextures(1, tex.addr)
+  glDeleteTextures(1, tex_diffuse.addr)
+  glDeleteTextures(1, tex_normal.addr)
   mesho.clean()
   win.destroy()
 
