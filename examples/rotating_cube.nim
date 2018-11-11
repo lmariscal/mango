@@ -100,14 +100,13 @@ proc main() =
     uNProjection  = normals.getLocation("uProjection")
     uNLightPos    = normals.getLocation("uLightPos")
     uNLightColor  = normals.getLocation("uLightColor")
-    uNObjectColor = normals.getLocation("uObjectColor")
     uNTex         = normals.getLocation("uTex")
     uNNormal      = normals.getLocation("uNormal")
 
     projection  = perspective(radians(45.0f), 1280.0f / 720.0f, 0.1f, 1000.0f)
     lightColor  = vec3(0.98f)
-    objectColor = vec3(1.0f)
-    shaderType  = stNormals
+    objectColor = vec3(102.0f / 255.0f, 187.0f / 255.0f, 106.0f / 255.0f)
+    shaderType  = stGoraud
 
   # Tex Diffuse Load
 
@@ -152,6 +151,7 @@ proc main() =
   normals.setInt(uNNormal, 1)
 
   var rot: float32 = 30
+  var zaxis: float32 = -5;
   var lightPos = vec3(1.2f, 1.0f, 2.0f)
 
   while win.isOpen():
@@ -166,7 +166,7 @@ proc main() =
     glActiveTexture(GL_TEXTURE1)
     glBindTexture(GL_TEXTURE_2D, tex_normal)
 
-    var trans = mat4(1.0f).translate(0, 0, -5).rotate(rot.radians(), vec3(1f, 1f, 0f))
+    var trans = mat4(1.0f).translate(0, 0, zaxis).rotate(rot.radians(), vec3(1f, 1f, 0f))
     var view  = mat4identity[float32]()
 
     if keyR.isPressed():
@@ -174,17 +174,24 @@ proc main() =
       if rot >= 360:
         rot = 0f
 
-    discard igSliderFloat("rotation", rot.addr, 0.0f, 360.0f)
-    if igButton($shaderType, ImVec2(x: 0, y: 0)):
-      if shaderType == stNormals:
-        shaderType = stGoraud
-      else:
-        shaderType.inc
+    igText("rotation:")
+    igSameLine()
+    discard igSliderFloat("##rotation", rot.addr, 0.0f, 360.0f)
 
-      if shaderType == stNormals:
-        objectColor = vec3(1.0f)
-      else:
-        objectColor = vec3(102.0f / 255.0f, 187.0f / 255.0f, 106.0f / 255.0f)
+    igText("zaxis:")
+    igSameLine()
+    discard igSliderFloat("##zaxis", zaxis.addr, -10.0f, -1.0f)
+
+    igText("shader:")
+    igSameLine()
+    if igButton("Goraud", ImVec2(x: 0, y: 0)):
+      shaderType = stGoraud
+    igSameLine()
+    if igButton("Phong", ImVec2(x: 0, y: 0)):
+      shaderType = stPhong
+    igSameLine()
+    if igButton("Normal", ImVec2(x: 0, y: 0)):
+      shaderType = stNormals
 
     if shaderType == stGoraud:
       goraud.setMat(uGModel, trans)
@@ -206,7 +213,6 @@ proc main() =
       normals.setMat(uNProjection, projection)
       normals.setVec(uNLightPos, lightPos)
       normals.setVec(uNLightColor, lightColor)
-      normals.setVec(uNObjectColor, objectColor)
 
     mesho.use()
 
