@@ -1,8 +1,6 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-import ../src/mango/[window, ioman, shader, mesh, utils, loger]
-import nimgl/stb_image
-import nimgl/opengl
+import mango
 import glm
 
 type
@@ -21,11 +19,22 @@ proc main() =
 
   var
     vertices: seq[float32] = @[
-    # Vertices             UVs           Normals
-      0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   0.0f, 1.0f, 1.0f,
-      0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-     -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-     -0.5f,  0.5f, 0.0f,   0.0f, 1.0f,   0.0f, 0.0f, 1.0f
+      0.5f,  0.5f, 0.0f,
+      0.5f, -0.5f, 0.0f,
+     -0.5f, -0.5f, 0.0f,
+     -0.5f,  0.5f, 0.0f,
+    ]
+    uvs: seq[float32] = @[
+      1.0f, 1.0f,   0.0f, 1.0f, 1.0f,
+      1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+      0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
+      0.0f, 1.0f,   0.0f, 0.0f, 1.0f
+    ]
+    normals: seq[float32] = @[
+      0.0f, 1.0f, 1.0f,
+      0.0f, 1.0f, 0.0f,
+      1.0f, 0.0f, 0.0f,
+      0.0f, 0.0f, 1.0f
     ]
 
     indices: seq[uint32] = @[
@@ -36,9 +45,11 @@ proc main() =
   const
     shaderData = readShader("examples/res/shaders/color.glsl")
 
+  echo shaderData.vertex
+
   var
-    shadero     = createShader(shaderData)
-    mesho       = createMesh(shadero.id, vertices, indices)
+    shadero     = newShader(shaderData)
+    mesho       = newMesh(shadero.id, vertices, uvs, normals, indices)
     uModel      = shadero.getLocation("uModel")
     uView       = shadero.getLocation("uView")
     uProjection = shadero.getLocation("uProjection")
@@ -46,23 +57,7 @@ proc main() =
 
   # Tex Load
 
-  var tex: uint32
-  glGenTextures(1, tex.addr);
-  glBindTexture(GL_TEXTURE_2D, tex);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.int32);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.int32);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32);
-
-  let img = stbi_load("examples/res/images/box.jpg", 3)
-
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img.width, img.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data);
-  glGenerateMipmap(GL_TEXTURE_2D)
-
-  img.data.stbi_image_free()
-
+  var img = newTexture("examples/res/images/box.jpg")
   var rot: float32 = 30
 
   while win.isOpen():
@@ -72,11 +67,10 @@ proc main() =
     # draw
     clearScreen(vec3(33f).rgb())
 
-    glActiveTexture(GL_TEXTURE0)
-    glBindTexture(GL_TEXTURE_2D, tex)
+    img.use()
 
-    var trans = mat4identity[float32]()
-    var view  = mat4identity[float32]()
+    var trans = mat4(1.0f)
+    var view  = mat4(1.0f)
     trans = rotate(trans, rot.radians(), vec3(0f, 0f, 1f))
 
     if keyR.isPressed():
@@ -94,7 +88,8 @@ proc main() =
 
     win.draw()
 
-  glDeleteTextures(1, tex.addr)
+  img.clean()
+  shadero.clean()
   mesho.clean()
   win.destroy()
 

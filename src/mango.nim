@@ -1,9 +1,27 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-## Mango Engine
-## ===
-## Because Mangos are tasty
+when not isMainModule:
+  import mango/[
+    ioman,
+    loger,
+    material,
+    mesh,
+    shader,
+    texture,
+    utils,
+    window
+  ]
 
-#[
-  Just as with NimGL this file is here to keep the structure of the nimble project.
-]#
+  export
+    ioman,
+    loger,
+    material,
+    mesh,
+    shader,
+    texture,
+    utils,
+    window
+else:
+  import mango/editor
+
+  startEditor()

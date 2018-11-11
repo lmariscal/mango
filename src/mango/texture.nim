@@ -3,6 +3,7 @@
 import nimgl/stb/image
 import nimgl/opengl
 import loger
+import utils
 
 type
   Texture = object
@@ -23,7 +24,7 @@ proc newTexture*(path: string): Texture =
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32)
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img.width, img.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data)
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.width, img.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data)
   glGenerateMipmap(GL_TEXTURE_2D)
 
   img.imageFree()

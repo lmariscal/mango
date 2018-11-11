@@ -1,6 +1,6 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-import ../src/mango/[window, ioman, shader, mesh, utils, loger, texture]
+import mango
 import glm
 
 type
@@ -19,51 +19,137 @@ proc main() =
     logMinLevel = llMango
 
   log("starting...")
-  let win = newWindow(1280, 720, "Rotating Cube")
+  let win = newWindow(1920, 1080, "Rotating Cube", false)
 
   var
     vertices: seq[float32] = @[
-     -0.5f, -0.5f, -0.5f,   0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-      0.5f, -0.5f, -0.5f,   1.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-      0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f,  0.0f, -1.0f,
-      0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f,  0.0f, -1.0f,
-     -0.5f,  0.5f, -0.5f,   0.0f, 1.0f,   0.0f,  0.0f, -1.0f,
-     -0.5f, -0.5f, -0.5f,   0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
+     -0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f,  0.5f, -0.5f,
+      0.5f,  0.5f, -0.5f,
+     -0.5f,  0.5f, -0.5f,
+     -0.5f, -0.5f, -0.5f,
 
-     -0.5f, -0.5f,  0.5f,   0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-      0.5f, -0.5f,  0.5f,   1.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-      0.5f,  0.5f,  0.5f,   1.0f, 1.0f,   0.0f,  0.0f,  1.0f,
-      0.5f,  0.5f,  0.5f,   1.0f, 1.0f,   0.0f,  0.0f,  1.0f,
-     -0.5f,  0.5f,  0.5f,   0.0f, 1.0f,   0.0f,  0.0f,  1.0f,
-     -0.5f, -0.5f,  0.5f,   0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
+     -0.5f, -0.5f,  0.5f,
+      0.5f, -0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+     -0.5f,  0.5f,  0.5f,
+     -0.5f, -0.5f,  0.5f,
 
-     -0.5f,  0.5f,  0.5f,   1.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
-     -0.5f,  0.5f, -0.5f,   1.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
-     -0.5f, -0.5f, -0.5f,   0.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
-     -0.5f, -0.5f, -0.5f,   0.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
-     -0.5f, -0.5f,  0.5f,   0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
-     -0.5f,  0.5f,  0.5f,   1.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
+     -0.5f,  0.5f,  0.5f,
+     -0.5f,  0.5f, -0.5f,
+     -0.5f, -0.5f, -0.5f,
+     -0.5f, -0.5f, -0.5f,
+     -0.5f, -0.5f,  0.5f,
+     -0.5f,  0.5f,  0.5f,
 
-      0.5f,  0.5f,  0.5f,   1.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-      0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   1.0f,  0.0f,  0.0f,
-      0.5f, -0.5f, -0.5f,   0.0f, 1.0f,   1.0f,  0.0f,  0.0f,
-      0.5f, -0.5f, -0.5f,   0.0f, 1.0f,   1.0f,  0.0f,  0.0f,
-      0.5f, -0.5f,  0.5f,   0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-      0.5f,  0.5f,  0.5f,   1.0f, 0.0f,   1.0f,  0.0f,  0.0f,
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
 
-     -0.5f, -0.5f, -0.5f,   0.0f, 1.0f,   0.0f, -1.0f,  0.0f,
-      0.5f, -0.5f, -0.5f,   1.0f, 1.0f,   0.0f, -1.0f,  0.0f,
-      0.5f, -0.5f,  0.5f,   1.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-      0.5f, -0.5f,  0.5f,   1.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-     -0.5f, -0.5f,  0.5f,   0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-     -0.5f, -0.5f, -0.5f,   0.0f, 1.0f,   0.0f, -1.0f,  0.0f,
+     -0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f, -0.5f,
+      0.5f, -0.5f,  0.5f,
+      0.5f, -0.5f,  0.5f,
+     -0.5f, -0.5f,  0.5f,
+     -0.5f, -0.5f, -0.5f,
 
-     -0.5f,  0.5f, -0.5f,   0.0f, 1.0f,   0.0f,  1.0f,  0.0f,
-      0.5f,  0.5f, -0.5f,   1.0f, 1.0f,   0.0f,  1.0f,  0.0f,
-      0.5f,  0.5f,  0.5f,   1.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-      0.5f,  0.5f,  0.5f,   1.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-     -0.5f,  0.5f,  0.5f,   0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-     -0.5f,  0.5f, -0.5f,   0.0f, 1.0f,   0.0f,  1.0f,  0.0f
+     -0.5f,  0.5f, -0.5f,
+      0.5f,  0.5f, -0.5f,
+      0.5f,  0.5f,  0.5f,
+      0.5f,  0.5f,  0.5f,
+     -0.5f,  0.5f,  0.5f,
+     -0.5f,  0.5f, -0.5f,
+    ]
+    uvs: seq[float32] = @[
+      0.0f, 0.0f,
+      1.0f, 0.0f,
+      1.0f, 1.0f,
+      1.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 0.0f,
+
+      0.0f, 0.0f,
+      1.0f, 0.0f,
+      1.0f, 1.0f,
+      1.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 0.0f,
+
+      1.0f, 0.0f,
+      1.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 0.0f,
+      1.0f, 0.0f,
+
+      1.0f, 0.0f,
+      1.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 1.0f,
+      0.0f, 0.0f,
+      1.0f, 0.0f,
+
+      0.0f, 1.0f,
+      1.0f, 1.0f,
+      1.0f, 0.0f,
+      1.0f, 0.0f,
+      0.0f, 0.0f,
+      0.0f, 1.0f,
+
+      0.0f, 1.0f,
+      1.0f, 1.0f,
+      1.0f, 0.0f,
+      1.0f, 0.0f,
+      0.0f, 0.0f,
+      0.0f, 1.0f,
+    ]
+    normals_pos: seq[float32] = @[
+      0.0f,  0.0f, -1.0f,
+      0.0f,  0.0f, -1.0f,
+      0.0f,  0.0f, -1.0f,
+      0.0f,  0.0f, -1.0f,
+      0.0f,  0.0f, -1.0f,
+      0.0f,  0.0f, -1.0f,
+
+      0.0f,  0.0f,  1.0f,
+      0.0f,  0.0f,  1.0f,
+      0.0f,  0.0f,  1.0f,
+      0.0f,  0.0f,  1.0f,
+      0.0f,  0.0f,  1.0f,
+      0.0f,  0.0f,  1.0f,
+
+     -1.0f,  0.0f,  0.0f,
+     -1.0f,  0.0f,  0.0f,
+     -1.0f,  0.0f,  0.0f,
+     -1.0f,  0.0f,  0.0f,
+     -1.0f,  0.0f,  0.0f,
+     -1.0f,  0.0f,  0.0f,
+
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+      1.0f,  0.0f,  0.0f,
+
+      0.0f, -1.0f,  0.0f,
+      0.0f, -1.0f,  0.0f,
+      0.0f, -1.0f,  0.0f,
+      0.0f, -1.0f,  0.0f,
+      0.0f, -1.0f,  0.0f,
+      0.0f, -1.0f,  0.0f,
+
+      0.0f,  1.0f,  0.0f,
+      0.0f,  1.0f,  0.0f,
+      0.0f,  1.0f,  0.0f,
+      0.0f,  1.0f,  0.0f,
+      0.0f,  1.0f,  0.0f,
+      0.0f,  1.0f,  0.0f
     ]
 
     indices: seq[uint32] = @[]
@@ -77,7 +163,7 @@ proc main() =
     goraud  = newShader(goraudData)
     phong   = newShader(phongData)
     normals = newShader(normalsData)
-    mesho   = newMesh(goraud.id, vertices, indices)
+    mesho   = newMesh(goraud.id, vertices, uvs, normals_pos, indices)
 
     uGModel       = goraud.getLocation("uModel")
     uGView        = goraud.getLocation("uView")
@@ -92,6 +178,8 @@ proc main() =
     uPLightPos    = phong.getLocation("uLightPos")
     uPLightColor  = phong.getLocation("uLightColor")
     uPObjectColor = phong.getLocation("uObjectColor")
+    uPTex         = phong.getLocation("uTex")
+    uPNormal      = phong.getLocation("uNormal")
 
     uNModel       = normals.getLocation("uModel")
     uNView        = normals.getLocation("uView")
@@ -101,7 +189,7 @@ proc main() =
     uNTex         = normals.getLocation("uTex")
     uNNormal      = normals.getLocation("uNormal")
 
-    projection  = perspective(radians(45.0f), 1280.0f / 720.0f, 0.1f, 1000.0f)
+    projection  = perspective(radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f)
     lightColor  = vec3(0.98f)
     objectColor = vec3(102.0f / 255.0f, 187.0f / 255.0f, 106.0f / 255.0f)
     shaderType  = stGoraud
@@ -111,6 +199,8 @@ proc main() =
 
   normals.setInt(uNTex, 0)
   normals.setInt(uNNormal, 1)
+  phong.setInt(uPTex, 0)
+  phong.setInt(uPNormal, 1)
 
   var rot: float32 = 30
   var zaxis: float32 = -5
@@ -127,7 +217,7 @@ proc main() =
     tex_normal.use(1)
 
     var trans = mat4(1.0f).translate(0, 0, zaxis).rotate(rot.radians(), vec3(1f, 1f, 0f))
-    var view  = mat4identity[float32]()
+    var view  = mat4(1.0f)
 
     if keyR.isPressed():
       rot += 1f

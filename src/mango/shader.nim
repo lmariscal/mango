@@ -10,6 +10,7 @@ type
     id*: uint32
     vertex*: uint32
     fragment*: uint32
+    path*: string
 
   ShaderSource* = object
     other*: cstring
@@ -42,12 +43,12 @@ proc readShader*(path: string): ShaderSource =
     if line.startsWith("//"): continue
     elif line == "": continue
 
-    if line[0] == '@':
-      if line == "@vertex": index = 1
-      elif line == "@fragment": index = 2
-      elif line == "@other": index = 0
-      elif line.startsWith("@include "):
-        var name = line["@include ".len ..< line.len]
+    if line[0] == '#' and not line.startsWith("#version"):
+      if line == "#vertex": index = 1
+      elif line == "#fragment": index = 2
+      elif line == "#other": index = 0
+      elif line.startsWith("#include "):
+        var name = line["#include ".len ..< line.len]
         if not name.endsWith(".glsl"): name.add(".glsl")
 
         let other_shader = readShader(path[0 .. path.rfind('/')] & name)
@@ -75,6 +76,7 @@ proc statusShader*(shader: uint32, `type`: string, path: string) =
     error("ShaderManager", message.toString())
 
 proc newShader*(source: ShaderSource): Shader =
+  result.path = source.path
   result.vertex = glCreateShader(GL_VERTEX_SHADER)
   result.vertex.glShaderSource(1, source.vertex.unsafeAddr(), nil)
   result.vertex.glCompileShader()
@@ -117,14 +119,14 @@ proc getLocation*(shader: Shader, name: string): int32 =
   shader.use()
   result = shader.id.glGetUniformLocation(name.cstring)
   if result == -1:
-    error("ShaderManager", "uniform " & name & " doesn't exist")
+    error("ShaderManager", "{shader.path} uniform {name} doesn't exist".fmt)
 
 # @TODO: Make a cache for this
 proc getAttrib*(shader: Shader, name: string): int32 =
   shader.use()
   result = shader.id.glGetAttribLocation(name.cstring)
   if result == -1:
-    error("ShaderManager", "attrib " & name & " doesn't exist")
+    error("ShaderManager", "{shader.path} attrib {name} doesn't exist".fmt)
 
 proc setMat*(shader: Shader, location: int32, mat: var Mat4[float32]) =
   shader.use()

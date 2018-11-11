@@ -1,11 +1,12 @@
 // Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-@vertex
+#vertex
 #version 330 core
 layout (location = 0) in vec3 vPos;
 layout (location = 1) in vec2 vUVs;
 layout (location = 2) in vec3 vNormals;
 
+out vec2 fUVs;
 out vec3 fPos;
 out vec3 fNormals;
 
@@ -14,16 +15,18 @@ uniform mat4 uView;
 uniform mat4 uProjection;
 
 void main() {
+  fUVs = vUVs;
   fPos = vec3(uModel * vec4(vPos, 1.0f));
   fNormals = mat3(transpose(inverse(uModel))) * vNormals;
 
   gl_Position = uProjection * uView * vec4(fPos, 1.0f);
 }
 
-@fragment
+#fragment
 #version 330 core
 out vec4 gColor;
 
+in vec2 fUVs;
 in vec3 fPos;
 in vec3 fNormals;
 
@@ -33,6 +36,8 @@ uniform vec3 uLightPos;
 uniform vec3 uLightColor;
 uniform vec3 uObjectColor;
 uniform vec3 uCamPos;
+
+#include utils
 
 void
 main() {
@@ -50,5 +55,5 @@ main() {
   float spec       = pow(max(dot(viewDir, reflectDir), 0.0f), 32);
   vec3  specular   = specularStrength * spec * uLightColor;
 
-  gColor = vec4((ambient + diffuse + specular) * uObjectColor, 1.0f);
+  gColor = texture(uTex, fUVs) * vec4((ambient + diffuse + specular) * rgb(vec3(255.0f, 255.0f, 255.0f)), 1.0f);
 }

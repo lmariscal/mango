@@ -7,11 +7,6 @@ license     = "MIT"
 srcDir      = "src"
 skipDirs    = @["examples"]
 
-let exs     = @[
-  "examples/rotating_cube",
-  "examples/rectangle"
-]
-
 # Dependencies
 
 requires "nim >= 0.18.0"
@@ -22,11 +17,10 @@ requires "msgpack4nim >= 0.2.7"
 # Tasks
 
 task rotating_cube, "run the rotating cube example":
-  exec("nim c -r " & exs[0] & ".nim")
+  exec("nim c -r examples/rotating_cube.nim")
 
 task rectangle, "run the rectangle example":
-  exec("nim c -r " & exs[1] & ".nim")
+  exec("nim c -r examples/rectangle.nim")
 
-task run, "run the examples":
-  for ex in exs:
-    exec("nim c -r " & ex & ".nim")
+task run, "run the editor":
+  exec("nim c -r src/mango.nim")

@@ -86,7 +86,10 @@ proc mlog*(system: string, msg: varargs[string, `$`]) =
   var joined = ""
   for m in msg:
     joined.add(m)
-  log(LogData(level: llMango, msg: "{system}: {joined}".fmt, time: now()))
+  if joined == "":
+    log(LogData(level: llMango, msg: "{system}".fmt, time: now()))
+  else:
+    log(LogData(level: llMango, msg: "{system}: {joined}".fmt, time: now()))
 
 proc crash*(msg: string, code: int32 = 1, close: bool = true) =
   let data = LogData(level: llCrash, msg: "{msg} [{code}]".fmt, time: now())

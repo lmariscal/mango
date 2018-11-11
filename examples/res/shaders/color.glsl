@@ -1,6 +1,6 @@
 // Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-@vertex
+#vertex
 #version 330 core
 in vec3 vPos;
 in vec2 vUVs;
@@ -18,7 +18,7 @@ main() {
   gl_Position = uProjection * uView * uModel * vec4(vPos, 1.0);
 }
 
-@fragment
+#fragment
 #version 330 core
 in vec2 fUVs;
 
@@ -29,4 +29,4 @@ uniform sampler2D uTex;
 void
 main() {
   gColor = texture(uTex, fUVs);
-} 
+}
