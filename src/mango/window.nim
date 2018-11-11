@@ -55,6 +55,7 @@ proc newWindow*(width: int32, height: int32, title: string = "Mango"): Window =
 
   result.context = igCreateContext()
   let io = igGetIO()
+  discard io.fonts.addFontFromFileTTF("res/fonts/roboto_mono/robotomono-regular.ttf", 15.0f)
 
   assert igGlfwInitForOpenGL(result.raw, false)
   assert igOpenGL3Init()
