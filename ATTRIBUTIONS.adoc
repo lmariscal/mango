@@ -1,0 +1,10 @@
+== Attributions
+
+Technologies used in the Mango Engine:
+
+- https://github.com/lmariscal/nimgl[NimGL]
+- https://github.com/ocornut/imgui[ImGui]
+- https://github.com/glfw/glfw[GLFW]
+- https://github.com/stavenko/nim-glm[GLM]
+- https://github.com/jangko/msgpack4nim[msgpack4nim]
+- https://github.com/nothings/stb[stb libraries]
