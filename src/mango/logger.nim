@@ -32,11 +32,11 @@ var
 proc getColor(level: LogLevel): ForegroundColor =
   case level:
     of llMango:
-      result = fgDefault
+      result = fgWhite
     of llDebug:
       result = fgCyan
     of llInfo:
-      result = fgDefault
+      result = fgWhite
     of llWarning:
       result = fgYellow
     of llError:
@@ -75,10 +75,16 @@ proc warning*(system: string, msg: string) =
 proc error*(system: string, msg: string) =
   log(LogData(level: llError, msg: "{system}: {msg}".fmt, time: now()))
 
-proc mlog*(system: string, msg: string) =
-  ## Mango Log
+proc cmlog*(system: string, msg: varargs[string, `$`]) =
+  ## Mango Log Compile Time
   ## Exposed for utility reasons, not recommended to use directly nor the level Mango as it is reserved to the library.
-  log(LogData(level: llMango, msg: "{system}: {msg}".fmt, time: now()))
+  var joined = ""
+  for m in msg:
+    joined.add(m)
+  if joined == "":
+    echo("[mngo] {system}".fmt)
+  else:
+    echo("[mngo] {system}: {joined}".fmt)
 
 proc mlog*(system: string, msg: varargs[string, `$`]) =
   ## Mango Log

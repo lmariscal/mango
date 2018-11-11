@@ -155,9 +155,9 @@ proc main() =
     indices: seq[uint32] = @[]
 
   const
-    goraudData  = readShader("examples/res/shaders/goraud.glsl")
-    phongData   = readShader("examples/res/shaders/phong.glsl")
-    normalsData = readShader("examples/res/shaders/normals.glsl")
+    goraudData  = readShader("res/shaders/goraud.glsl")
+    phongData   = readShader("res/shaders/phong.glsl")
+    normalsData = readShader("res/shaders/normals.glsl")
 
   var
     goraud  = newShader(goraudData)
@@ -211,7 +211,7 @@ proc main() =
     win.update()
 
     # draw
-    clearScreen(vec3(33f).rgb())
+    win.clearScreen(vec3(33f).rgb())
 
     tex_diffuse.use(0)
     tex_normal.use(1)
@@ -274,6 +274,6 @@ proc main() =
   phong.clean()
   normals.clean()
   mesho.clean()
-  win.destroy()
+  win.clean()
 
 main()

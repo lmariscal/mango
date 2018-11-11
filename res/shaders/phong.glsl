@@ -37,7 +37,7 @@ uniform vec3 uLightColor;
 uniform vec3 uObjectColor;
 uniform vec3 uCamPos;
 
-#include utils
+#include utils.glsl
 
 void
 main() {

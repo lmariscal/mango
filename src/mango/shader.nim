@@ -3,7 +3,7 @@
 import nimgl/opengl
 import glm
 import strutils
-import loger
+import logger
 
 type
   Shader* = object
@@ -25,6 +25,7 @@ converter toString(chars: seq[cchar]): string =
     result.add(c)
 
 proc readShader*(path: string): ShaderSource =
+  cmlog("ShaderManager", "reading {path} shader".fmt)
   var source: string
   result.path = path
   try:
@@ -49,7 +50,7 @@ proc readShader*(path: string): ShaderSource =
       elif line == "#other": index = 0
       elif line.startsWith("#include "):
         var name = line["#include ".len ..< line.len]
-        if not name.endsWith(".glsl"): name.add(".glsl")
+        if not name.contains('.'): name.add(".glsl")
 
         let other_shader = readShader(path[0 .. path.rfind('/')] & name)
         if index == 0: other.add($other_shader.other)

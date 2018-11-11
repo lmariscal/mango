@@ -25,10 +25,10 @@ proc main() =
      -0.5f,  0.5f, 0.0f,
     ]
     uvs: seq[float32] = @[
-      1.0f, 1.0f,   0.0f, 1.0f, 1.0f,
-      1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-      0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-      0.0f, 1.0f,   0.0f, 0.0f, 1.0f
+      1.0f, 1.0f,
+      1.0f, 0.0f,
+      0.0f, 0.0f,
+      0.0f, 1.0f,
     ]
     normals: seq[float32] = @[
       0.0f, 1.0f, 1.0f,
@@ -43,9 +43,7 @@ proc main() =
     ]
 
   const
-    shaderData = readShader("examples/res/shaders/color.glsl")
-
-  echo shaderData.vertex
+    shaderData = readShader("res/shaders/color.glsl")
 
   var
     shadero     = newShader(shaderData)
@@ -91,6 +89,6 @@ proc main() =
   img.clean()
   shadero.clean()
   mesho.clean()
-  win.destroy()
+  win.clean()
 
 main()

@@ -2,21 +2,25 @@
 
 import nimgl/[glfw, opengl, imgui]
 import ioman
-import loger
+import logger
 import glm
 import utils
 import nimgl/imgui/[impl_glfw, impl_opengl]
 
 export imgui
+export glfw
 
 type
-  Window* = object
+  Window* = ref object
+    id*: int32
     size*: Vec2i
     raw*: GLFWWindow
-    context*: ptr ImGuiContext
+    context*: pointer # ImGuiContext
+    resizeProc*: ResizeProc
+  ResizeProc* = proc(window: Window): void
 
 var
-  windowsOpen: int = 0
+  windowsArray: seq[Window] = @[]
   glfwInitiated: bool = false
   glInitiated: bool = false
 
@@ -109,7 +113,22 @@ proc charEvent(window: GLFWWindow, code: uint32): void {.cdecl.} =
 proc mouseEvent(window: GLFWWindow, button: GLFWMouseButton, action: GLFWMouseAction, mods: GLFWKeyMod): void {.cdecl.} =
   igGlfwMouseCallback(window, button, action, mods)
 
-proc newWindow*(width: int32, height: int32, title: string = "Mango", decorated: bool = true): Window =
+proc resizeEvent(window: GLFWWindow, width: int32, height: int32): void {.cdecl.} =
+  for i in 0 ..< windowsArray.len:
+    if windowsArray[i].raw == window:
+      windowsArray[i].size.x = width
+      windowsArray[i].size.y = height
+      if windowsArray[i].resizeProc != nil:
+        windowsArray[i].resizeProc(windowsArray[i])
+
+proc frameBufferResizeEvent(window: GLFWWindow, width: int32, height: int32): void {.cdecl.} =
+  glViewPort(0, 0, width, height)
+
+proc ratio*(window: Window): float32 =
+  window.size.x.float32 / window.size.y.float32
+
+proc newWindow*(width: int32, height: int32, title: string = "Mango", decorated: bool = true, resizable: bool = false): Window =
+  result = new Window
   discard glfwSetErrorCallback(glfwErrorEvent)
   if not glfwInitiated:
     lassert(glfwInit(), "failed to init glfw")
@@ -117,29 +136,31 @@ proc newWindow*(width: int32, height: int32, title: string = "Mango", decorated:
 
   glfwDefaultWindowHints()
   glfwWindowHint(whDecorated, if decorated: GLFW_TRUE else: GLFW_FALSE)
+  glfwWindowHint(whResizable, if resizable: GLFW_TRUE else: GLFW_FALSE)
   glfwWindowHint(whContextVersionMajor, 4)
   glfwWindowHint(whContextVersionMinor, 1)
   glfwWindowHint(whOpenglForwardCompat, GLFW_TRUE)
   glfwWindowHint(whOpenglProfile, GLFW_OPENGL_CORE_PROFILE)
-  glfwWindowHint(whResizable, GLFW_FALSE)
 
   result.raw = glfwCreateWindow(width, height, title, nil, nil)
   lassert(result.raw != nil, "failed to create window")
   result.size = vec2(width, height)
-
-  windowsOpen.inc
 
   result.raw.makeContextCurrent()
   discard result.raw.setKeyCallback(keyEvent)
   discard result.raw.setMouseButtonCallback(mouseEvent)
   discard result.raw.setScrollCallback(scrollEvent)
   discard result.raw.setCharCallback(charEvent)
+  discard result.raw.setWindowSizeCallback(resizeEvent)
+  discard result.raw.setFrameBufferSizeCallback(frameBufferResizeEvent)
 
   if not glInitiated:
     lassert(glInit(), "failed to init opengl")
     glInitiated = true
 
   glEnable(GL_DEPTH_TEST)
+  glEnable(GL_SCISSOR_TEST)
+  glViewPort(0, 0, width, height)
 
   result.context = igCreateContext()
   let io = igGetIO()
@@ -149,6 +170,8 @@ proc newWindow*(width: int32, height: int32, title: string = "Mango", decorated:
   assert igOpenGL3Init()
 
   igCherryTheme()
+  result.id = windowsArray.len.int32
+  windowsArray.add(result)
 
 proc update*(window: Window) =
   glfwPollEvents()
@@ -158,7 +181,8 @@ proc update*(window: Window) =
   igGlfwNewFrame()
   igNewFrame()
 
-proc clearScreen*(color: Vec3) =
+proc clearScreen*(window: Window, color: Vec3) =
+  glScissor(0, 0, window.size.x, window.size.y)
   glClearColor(color.r, color.g, color.b, 1.0f)
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
@@ -170,13 +194,18 @@ proc draw*(window: Window) =
 proc isOpen*(window: Window): bool =
   not window.raw.windowShouldClose()
 
-proc destroy*(window: Window) =
+proc clean*(window: Window) =
   igOpenGL3Shutdown()
   igGlfwShutdown()
-  window.context.igDestroyContext()
+  cast[ptr ImGuiContext](window.context).igDestroyContext()
 
   window.raw.destroyWindow()
-  windowsOpen.dec
-  if windowsOpen < 1 and glfwInitiated:
+  windowsArray.del(window.id)
+
+  for i in 0 ..< windowsArray.len:
+    if windowsArray[i].id > window.id:
+      windowsArray[i].id.dec
+
+  if windowsArray.len < 1 and glfwInitiated:
     glfwTerminate()
     glfwInitiated = false

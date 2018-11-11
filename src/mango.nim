@@ -3,7 +3,7 @@
 when not isMainModule:
   import mango/[
     ioman,
-    loger,
+    logger,
     material,
     mesh,
     shader,
@@ -14,7 +14,7 @@ when not isMainModule:
 
   export
     ioman,
-    loger,
+    logger,
     material,
     mesh,
     shader,

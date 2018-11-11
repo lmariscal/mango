@@ -2,7 +2,7 @@
 
 import nimgl/stb/image
 import nimgl/opengl
-import loger
+import logger
 import utils
 
 type
