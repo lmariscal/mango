@@ -1,7 +1,7 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
 import ../src/mango/[window, ioman, shader, mesh, utils, logging]
-import nimgl/stb_image
+import nimgl/stb/image
 import nimgl/opengl
 import glm
 
@@ -76,10 +76,10 @@ proc main() =
     normalsData = readShader("examples/res/shaders/normals.glsl")
 
   var
-    goraud  = createShader(goraudData)
-    phong   = createShader(phongData)
-    normals = createShader(normalsData)
-    mesho   = createMesh(goraud.id, vertices, indices)
+    goraud  = newShader(goraudData)
+    phong   = newShader(phongData)
+    normals = newShader(normalsData)
+    mesho   = newMesh(goraud.id, vertices, indices)
 
     uGModel       = goraud.getLocation("uModel")
     uGView        = goraud.getLocation("uView")
@@ -112,39 +112,39 @@ proc main() =
   # Tex Diffuse Load
 
   var tex_diffuse: uint32
-  glGenTextures(1, tex_diffuse.addr);
-  glBindTexture(GL_TEXTURE_2D, tex_diffuse);
+  glGenTextures(1, tex_diffuse.addr)
+  glBindTexture(GL_TEXTURE_2D, tex_diffuse)
 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.int32);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.int32);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.int32)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.int32)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32)
 
-  let img_diffuse = stbi_load("examples/res/images/brickwall.jpg", 3)
+  let img_diffuse = stbiLoad("examples/res/images/brickwall.jpg", 3)
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img_diffuse.width, img_diffuse.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_diffuse.data);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img_diffuse.width, img_diffuse.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_diffuse.data)
   glGenerateMipmap(GL_TEXTURE_2D)
 
-  img_diffuse.data.stbi_image_free()
+  img_diffuse.data.stbiImageFree()
 
   # End Diffuse
   # Tex Normal Load
 
   var tex_normal: uint32
-  glGenTextures(1, tex_normal.addr);
-  glBindTexture(GL_TEXTURE_2D, tex_normal);
+  glGenTextures(1, tex_normal.addr)
+  glBindTexture(GL_TEXTURE_2D, tex_normal)
 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.int32);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.int32);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.int32)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.int32)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32)
 
-  let img_normal = stbi_load("examples/res/images/brickwall_normal.jpg", 3)
+  let img_normal = stbiLoad("examples/res/images/brickwall_normal.jpg", 3)
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img_normal.width, img_normal.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_normal.data);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img_normal.width, img_normal.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_normal.data)
   glGenerateMipmap(GL_TEXTURE_2D)
 
-  img_normal.data.stbi_image_free()
+  img_normal.data.stbiImageFree()
 
   # End Normal
 

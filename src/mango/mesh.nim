@@ -17,7 +17,7 @@ proc fSize(num: int): int32 =
 proc iSize(num: int): int32 =
   int32(int32.sizeof * num)
 
-proc createMesh*(shader: uint32, vertices: var seq[float32], indices: var seq[uint32]): Mesh =
+proc newMesh*(shader: uint32, vertices: var seq[float32], indices: var seq[uint32]): Mesh =
   result.vertices = vertices
   result.indices = indices
   glGenVertexArrays(1, result.vao.addr)

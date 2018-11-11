@@ -74,7 +74,7 @@ proc statusShader*(shader: uint32, `type`: string, path: string) =
     error("ShaderManager", "failed to compile " & `type` & " shader \"" & path & "\":")
     error("ShaderManager", message.toString())
 
-proc createShader*(source: ShaderSource): Shader =
+proc newShader*(source: ShaderSource): Shader =
   result.vertex = glCreateShader(GL_VERTEX_SHADER)
   result.vertex.glShaderSource(1, source.vertex.unsafeAddr(), nil)
   result.vertex.glCompileShader()
@@ -101,8 +101,8 @@ proc createShader*(source: ShaderSource): Shader =
 
   mlog("ShaderManager", "loading {source.path} shader".fmt)
 
-proc createShader*(file: string): Shader =
-  createShader(readShader(file))
+proc newShader*(file: string): Shader =
+  newShader(readShader(file))
 
 proc use*(shader: Shader) =
   shader.id.glUseProgram()
