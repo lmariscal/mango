@@ -1,8 +1,6 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-import ../src/mango/[window, ioman, shader, mesh, utils, logging]
-import nimgl/stb/image
-import nimgl/opengl
+import ../src/mango/[window, ioman, shader, mesh, utils, loger, texture]
 import glm
 
 type
@@ -108,50 +106,14 @@ proc main() =
     objectColor = vec3(102.0f / 255.0f, 187.0f / 255.0f, 106.0f / 255.0f)
     shaderType  = stGoraud
 
-  # Tex Diffuse Load
-
-  var tex_diffuse: uint32
-  glGenTextures(1, tex_diffuse.addr)
-  glBindTexture(GL_TEXTURE_2D, tex_diffuse)
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.int32)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.int32)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32)
-
-  let img_diffuse = stbiLoad("examples/res/images/brickwall.jpg", 3)
-
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img_diffuse.width, img_diffuse.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_diffuse.data)
-  glGenerateMipmap(GL_TEXTURE_2D)
-
-  img_diffuse.data.stbiImageFree()
-
-  # End Diffuse
-  # Tex Normal Load
-
-  var tex_normal: uint32
-  glGenTextures(1, tex_normal.addr)
-  glBindTexture(GL_TEXTURE_2D, tex_normal)
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.int32)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.int32)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32)
-
-  let img_normal = stbiLoad("examples/res/images/brickwall_normal.jpg", 3)
-
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB.int32, img_normal.width, img_normal.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_normal.data)
-  glGenerateMipmap(GL_TEXTURE_2D)
-
-  img_normal.data.stbiImageFree()
-
-  # End Normal
+  var tex_diffuse = newTexture("examples/res/images/brickwall.jpg")
+  var tex_normal = newTexture("examples/res/images/brickwall_normal.jpg")
 
   normals.setInt(uNTex, 0)
   normals.setInt(uNNormal, 1)
 
   var rot: float32 = 30
-  var zaxis: float32 = -5;
+  var zaxis: float32 = -5
   var lightPos = vec3(1.2f, 1.0f, 2.0f)
 
   while win.isOpen():
@@ -161,10 +123,8 @@ proc main() =
     # draw
     clearScreen(vec3(33f).rgb())
 
-    glActiveTexture(GL_TEXTURE0)
-    glBindTexture(GL_TEXTURE_2D, tex_diffuse)
-    glActiveTexture(GL_TEXTURE1)
-    glBindTexture(GL_TEXTURE_2D, tex_normal)
+    tex_diffuse.use(0)
+    tex_normal.use(1)
 
     var trans = mat4(1.0f).translate(0, 0, zaxis).rotate(rot.radians(), vec3(1f, 1f, 0f))
     var view  = mat4identity[float32]()
@@ -218,8 +178,11 @@ proc main() =
 
     win.draw()
 
-  glDeleteTextures(1, tex_diffuse.addr)
-  glDeleteTextures(1, tex_normal.addr)
+  tex_diffuse.clean()
+  tex_normal.clean()
+  goraud.clean()
+  phong.clean()
+  normals.clean()
   mesho.clean()
   win.destroy()
 

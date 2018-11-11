@@ -151,6 +151,9 @@ $RECYCLE.BIN/
 *.so
 *.dylib
 
+# Visual Studio Code
+.vscode
+
 ### Mango ###
 
 # Tests

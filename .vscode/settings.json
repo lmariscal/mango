@@ -1,7 +1,0 @@
-{
-  "files.associations": {
-    "*.nimble": "nim",
-    "*.ns": "nim",
-    "string": "cpp"
-  }
-}

@@ -1,6 +1,6 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-import ../src/mango/[window, ioman, shader, mesh, utils, logging]
+import ../src/mango/[window, ioman, shader, mesh, utils, loger]
 import nimgl/stb_image
 import nimgl/opengl
 import glm
@@ -25,7 +25,7 @@ proc main() =
       0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   0.0f, 1.0f, 1.0f,
       0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
      -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-     -0.5f,  0.5f, 0.0f,   0.0f, 1.0f,   0.0f, 0.0f, 1.0f 
+     -0.5f,  0.5f, 0.0f,   0.0f, 1.0f,   0.0f, 0.0f, 1.0f
     ]
 
     indices: seq[uint32] = @[

@@ -3,7 +3,7 @@
 import nimgl/opengl
 import glm
 import strutils
-import logging
+import loger
 
 type
   Shader* = object
@@ -104,8 +104,13 @@ proc newShader*(source: ShaderSource): Shader =
 proc newShader*(file: string): Shader =
   newShader(readShader(file))
 
-proc use*(shader: Shader) =
+proc use*(shader: Shader): void =
   shader.id.glUseProgram()
+
+proc clean*(shader: Shader): void =
+  glDeleteShader(shader.vertex)
+  glDeleteShader(shader.fragment)
+  glDeleteProgram(shader.id)
 
 # @TODO: Make a cache for this
 proc getLocation*(shader: Shader, name: string): int32 =

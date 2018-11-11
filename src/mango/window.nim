@@ -2,7 +2,7 @@
 
 import nimgl/[glfw, opengl]
 import ioman
-import logging
+import loger
 import glm
 import nimgl/imgui, nimgl/imgui/[impl_glfw, impl_opengl]
 
