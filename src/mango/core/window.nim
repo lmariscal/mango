@@ -15,6 +15,7 @@ type
   Window* = ref object
     id*: int32
     size*: Vec2i
+    fbSize*: Vec2i
     raw*: GLFWWindow
     context*: pointer # ImGuiContext
     resizeProc*: ResizeProc
@@ -159,9 +160,11 @@ proc newWindow*(width: int32, height: int32, title: string = "Mango", decorated:
     lassert(mgInit(), "failed to init gl")
     glInitiated = true
 
+  result.raw.getFramebufferSize(result.fbSize.x.addr, result.fbSize.y.addr)
+
   mgDepthTest(true)
   mgScissorTest(true)
-  mgSetViewRect(0'i32, 0'i32, width, height)
+  mgSetViewRect(0'i32, 0'i32, result.fbSize.x, result.fbSize.y)
 
   result.context = igCreateContext()
   let io = igGetIO()
@@ -183,7 +186,7 @@ proc update*(window: Window) =
   igNewFrame()
 
 proc clearScreen*(window: Window, color: Vec3) =
-  mgSetScissor(0, 0, window.size.x, window.size.y)
+  mgSetScissor(0, 0, window.fbSize.x, window.fbSize.y)
   mgClearColor(color.r, color.g, color.b, 1.0f)
   mgClearBuffers()
 

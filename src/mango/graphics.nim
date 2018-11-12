@@ -14,6 +14,14 @@ type
     len*: uint32
   Texture2D* = object
     id*: uint32
+  ShaderVertex* = object
+    id*: uint32
+  ShaderFragment* = object
+    id*: uint32
+  ShaderProgram* = object
+    id*: uint32
+    vertex*: ShaderVertex
+    fragment*: ShaderFragment
   DataUsage* = enum
     duStreamDraw
     duStreamRead

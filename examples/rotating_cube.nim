@@ -19,7 +19,7 @@ proc main() =
     logMinLevel = llMango
 
   log("starting...")
-  let win = newWindow(1280, 720, "Rotating Cube")
+  let win = newWindow(1280, 720, "Rotating Cube", true, true)
 
   var
     vertices: seq[float32] = @[

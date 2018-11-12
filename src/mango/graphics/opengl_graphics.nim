@@ -10,6 +10,13 @@ var
   currentIndexBuffer: uint32
   currentVertexDecl: uint32
   currentTexture2D: uint32
+  currentShaderProgram: uint32
+
+converter toString(chars: seq[cchar]): string =
+  result = ""
+  for c in chars:
+    if c == '\0': continue
+    result.add(c)
 
 proc mgInit*(): bool =
   glInit()
@@ -323,3 +330,93 @@ proc add*(vao: var VertexDecl, `type`: VertexAttrib, stride: int32, offset: int3
   else:
     glVertexAttribLPointer(vao.attribs, data_size, data_type, stride, cast[pointer](offset))
   vao.attribs = vao.attribs + 1'u32
+
+proc statusShader(shader: uint32, `type`: string, path: string) =
+  var status: int32
+  shader.glGetShaderiv(GL_COMPILE_STATUS, status.addr)
+  if status != GL_TRUE.ord:
+    var length: int32
+    var message = newSeq[cchar](1024)
+    shader.glGetShaderInfoLog(1024, length.addr, message[0].addr)
+    error("ShaderManager", "failed to compile " & `type` & " shader \"" & path & "\":")
+    error("ShaderManager", message.toString())
+
+proc statusProgram(program: uint32) =
+  var status: int32
+  program.glGetProgramiv(GL_LINK_STATUS, status.addr)
+  if status != GL_TRUE.ord:
+    var length: int32
+    var message = newSeq[cchar](1024)
+    program.glGetProgramInfoLog(1024, length.addr, message[0].addr)
+    error("ShaderManager", "failed to link shader program {program}".fmt)
+    error("ShaderManager", message.toString())
+
+proc newShaderProgram*(vertexSource: cstring, fragmentSource: cstring, vertexPath: string, fragmentPath: string): ShaderProgram =
+  result.vertex.id = glCreateShader(GL_VERTEX_SHADER)
+  result.vertex.id.glShaderSource(1, vertexSource.unsafeAddr, nil)
+  result.vertex.id.glCompileShader()
+  result.vertex.id.statusShader("vertex", vertexPath)
+
+  result.fragment.id = glCreateShader(GL_FRAGMENT_SHADER)
+  result.fragment.id.glShaderSource(1, fragmentSource.unsafeAddr, nil)
+  result.fragment.id.glCompileShader()
+  result.fragment.id.statusShader("fragment", fragmentPath)
+
+  result.id = glCreateProgram()
+  result.id.glAttachShader(result.vertex.id)
+  result.id.glAttachShader(result.fragment.id)
+  result.id.glLinkProgram()
+  result.id.statusProgram()
+
+proc use*(program: ShaderProgram): void =
+  currentShaderProgram = program.id
+  program.id.glUseProgram()
+
+proc clean*(program: ShaderProgram): void =
+  program.vertex.id.glDeleteShader()
+  program.fragment.id.glDeleteShader()
+  program.id.glDeleteProgram()
+
+proc uniformLocation*(program: ShaderProgram, name: string): int32 =
+  if currentShaderProgram != program.id: program.use()
+  result = program.id.glGetUniformLocation(name.cstring)
+
+proc attribLocation*(program: ShaderProgram, name: string): int32 =
+  if currentShaderProgram != program.id: program.use()
+  result = program.id.glGetAttribLocation(name.cstring)
+
+proc uniformMatrix*(program: ShaderProgram, location: int32, mat: var Mat4f): void =
+  if location < 0: return
+  if currentShaderProgram != program.id: program.use()
+  glUniformMatrix4fv(location, 1, false, mat.caddr)
+
+proc uniformMatrix*(program: ShaderProgram, location: int32, mat: var Mat3f): void =
+  if location < 0: return
+  if currentShaderProgram != program.id: program.use()
+  glUniformMatrix3fv(location, 1, false, mat.caddr)
+
+proc uniformMatrix*(program: ShaderProgram, location: int32, mat: var Mat2f): void =
+  if location < 0: return
+  if currentShaderProgram != program.id: program.use()
+  glUniformMatrix2fv(location, 1, false, mat.caddr)
+
+
+proc uniformVector*(program: ShaderProgram, location: int32, vec: var Vec4f): void =
+  if location < 0: return
+  if currentShaderProgram != program.id: program.use()
+  glUniform4fv(location, 1, vec.caddr)
+
+proc uniformVector*(program: ShaderProgram, location: int32, vec: var Vec3f): void =
+  if location < 0: return
+  if currentShaderProgram != program.id: program.use()
+  glUniform3fv(location, 1, vec.caddr)
+
+proc uniformVector*(program: ShaderProgram, location: int32, vec: var Vec2f): void =
+  if location < 0: return
+  if currentShaderProgram != program.id: program.use()
+  glUniform2fv(location, 1, vec.caddr)
+
+proc uniformInt*(program: ShaderProgram, location: int32, val: int32): void =
+  if location < 0: return
+  if currentShaderProgram != program.id: program.use()
+  glUniform1i(location, val)
