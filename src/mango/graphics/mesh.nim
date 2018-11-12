@@ -4,12 +4,55 @@ import glm
 import ../graphics
 
 type
-  Mesh* = object
+  Mesh* = object of RootObj
     vertices*: seq[float32]
     indices*: seq[uint32]
     vao*: VertexDecl
     vbo*: VertexBuffer
     idx*: IndexBuffer
+  LineMesh* = object of Mesh
+
+proc newLineMesh*(vertices: var seq[float32], indices: var seq[uint32]): LineMesh =
+  result.vertices = vertices
+  result.indices = indices
+  result.vao = newVertexDecl()
+  result.vbo = newVertexBuffer()
+  result.idx = newIndexBuffer()
+
+  result.vao.use()
+
+  if indices.len == 0:
+    for i in 0 ..< (vertices.len / 3).int32:
+      result.indices.add(i.uint32)
+
+  result.vbo.use()
+  result.vbo.data(fSize(vertices.len), vertices, duStaticDraw)
+
+  result.idx.use()
+  result.idx.data(iSize(result.indices.len), result.indices, duStaticDraw)
+
+  result.vao.add(vaFloat3, fSize(3), 0)
+
+proc newMesh*(vertices: var seq[float32], indices: var seq[uint32]): Mesh =
+  result.vertices = vertices
+  result.indices = indices
+  result.vao = newVertexDecl()
+  result.vbo = newVertexBuffer()
+  result.idx = newIndexBuffer()
+
+  result.vao.use()
+
+  if indices.len == 0:
+    for i in 0 ..< (vertices.len / 3).int32:
+      result.indices.add(i.uint32)
+
+  result.vbo.use()
+  result.vbo.data(fSize(vertices.len), vertices, duStaticDraw)
+
+  result.idx.use()
+  result.idx.data(iSize(result.indices.len), result.indices, duStaticDraw)
+
+  result.vao.add(vaFloat3, fSize(3), 0)
 
 proc newMesh*(vertices: var seq[float32], uvs: var seq[float32], normals: var seq[float32], indices: var seq[uint32]): Mesh =
   result.vertices = vertices
@@ -38,6 +81,9 @@ proc newMesh*(vertices: var seq[float32], uvs: var seq[float32], normals: var se
 
 proc use*(mesh: Mesh) =
   mesh.vao.drawElements(dmTriangles, mesh.indices.len, dtUInt, 0)
+
+proc use*(mesh: LineMesh) =
+  mesh.vao.drawElements(dmLines, mesh.indices.len, dtUInt, 0)
 
 proc clean*(mesh: var Mesh) =
   mesh.vbo.clean()

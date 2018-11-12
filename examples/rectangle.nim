@@ -47,7 +47,7 @@ proc main() =
 
   var
     shadero     = newShader(shaderData)
-    mesho       = newMesh(shadero.id, vertices, uvs, normals, indices)
+    mesho       = newMesh(vertices, uvs, normals, indices)
     uModel      = shadero.getLocation("uModel")
     uView       = shadero.getLocation("uView")
     uProjection = shadero.getLocation("uProjection")
@@ -63,7 +63,7 @@ proc main() =
     win.update()
 
     # draw
-    clearScreen(vec3(33f).rgb())
+    win.clearScreen(vec3(33f).rgb())
 
     img.use()
 
