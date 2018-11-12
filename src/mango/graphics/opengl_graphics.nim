@@ -420,3 +420,6 @@ proc uniformInt*(program: ShaderProgram, location: int32, val: int32): void =
   if location < 0: return
   if currentShaderProgram != program.id: program.use()
   glUniform1i(location, val)
+
+proc mgLineWidth*(width: float32): void =
+  glLineWidth(width)

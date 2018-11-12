@@ -21,7 +21,7 @@ proc startEditor*() =
   win = newWindow(1280, 720, "Mango", decorated = true, resizable = true)
   win.resizeProc = resizeEvent
   projection = perspective(radians(45.0f), win.ratio(), 0.1f, 1000.0f)
-  spaceo = newSpace()
+  spaceo = newSpace(16, 16)
 
   while win.isOpen():
     win.update()

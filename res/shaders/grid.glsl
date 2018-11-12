@@ -17,7 +17,9 @@ main() {
 #version 330 core
 out vec4 gColor;
 
+uniform vec3 uColor;
+
 void
 main() {
-  gColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+  gColor = vec4(uColor, 1.0f);
 }

@@ -85,6 +85,12 @@ proc use*(mesh: Mesh) =
 proc use*(mesh: LineMesh) =
   mesh.vao.drawElements(dmLines, mesh.indices.len, dtUInt, 0)
 
+proc use*(mesh: Mesh, offset: int32, size: int32) =
+  mesh.vao.drawElements(dmTriangles, size, dtUInt, offset)
+
+proc use*(mesh: LineMesh, offset: int32, size: int32) =
+  mesh.vao.drawElements(dmLines, size, dtUInt, offset)
+
 proc clean*(mesh: var Mesh) =
   mesh.vbo.clean()
   mesh.idx.clean()

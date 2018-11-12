@@ -158,6 +158,8 @@ $RECYCLE.BIN/
 
 # Tests
 examples/rotating_cube
+examples/rectangle
+mango
 imgui.ini
 
 # End of https://www.gitignore.io/api/c,osx,nim,c++,linux,macos,windows,visualstudiocode
