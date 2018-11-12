@@ -4,6 +4,7 @@ import glm
 import nimgl/imgui
 
 converter toInt32*(x: uint32): int32 = x.int32
+converter toInt32*(x: int): int32 = x.int32
 converter toUint32*(x: int32): uint32 = x.uint32
 converter toImVec4*(v: Vec4f): ImVec4 = cast[ImVec4](v)
 converter toImVec2*(v: Vec2f): ImVec2 = cast[ImVec2](v)

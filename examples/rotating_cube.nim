@@ -19,7 +19,7 @@ proc main() =
     logMinLevel = llMango
 
   log("starting...")
-  let win = newWindow(1920, 1080, "Rotating Cube", false)
+  let win = newWindow(1280, 720, "Rotating Cube")
 
   var
     vertices: seq[float32] = @[
@@ -163,7 +163,7 @@ proc main() =
     goraud  = newShader(goraudData)
     phong   = newShader(phongData)
     normals = newShader(normalsData)
-    mesho   = newMesh(goraud.id, vertices, uvs, normals_pos, indices)
+    mesho   = newMesh(vertices, uvs, normals_pos, indices)
 
     uGModel       = goraud.getLocation("uModel")
     uGView        = goraud.getLocation("uView")

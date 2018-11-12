@@ -23,4 +23,4 @@ task rectangle, "run the rectangle example":
   exec("nim c -r examples/rectangle.nim")
 
 task run, "run the editor":
-  exec("nim c -r src/mango.nim")
+  exec("nim c -r -o:mango src/mango.nim")

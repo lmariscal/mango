@@ -1,11 +1,12 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-import nimgl/[glfw, opengl, imgui]
+import nimgl/[glfw, imgui]
 import ioman
 import logger
 import glm
 import utils
 import nimgl/imgui/[impl_glfw, impl_opengl]
+import ../graphics
 
 export imgui
 export glfw
@@ -122,7 +123,7 @@ proc resizeEvent(window: GLFWWindow, width: int32, height: int32): void {.cdecl.
         windowsArray[i].resizeProc(windowsArray[i])
 
 proc frameBufferResizeEvent(window: GLFWWindow, width: int32, height: int32): void {.cdecl.} =
-  glViewPort(0, 0, width, height)
+  mgSetViewRect(0'i32, 0'i32, width, height)
 
 proc ratio*(window: Window): float32 =
   window.size.x.float32 / window.size.y.float32
@@ -155,12 +156,12 @@ proc newWindow*(width: int32, height: int32, title: string = "Mango", decorated:
   discard result.raw.setFrameBufferSizeCallback(frameBufferResizeEvent)
 
   if not glInitiated:
-    lassert(glInit(), "failed to init opengl")
+    lassert(mgInit(), "failed to init gl")
     glInitiated = true
 
-  glEnable(GL_DEPTH_TEST)
-  glEnable(GL_SCISSOR_TEST)
-  glViewPort(0, 0, width, height)
+  mgDepthTest(true)
+  mgScissorTest(true)
+  mgSetViewRect(0'i32, 0'i32, width, height)
 
   result.context = igCreateContext()
   let io = igGetIO()
@@ -182,9 +183,9 @@ proc update*(window: Window) =
   igNewFrame()
 
 proc clearScreen*(window: Window, color: Vec3) =
-  glScissor(0, 0, window.size.x, window.size.y)
-  glClearColor(color.r, color.g, color.b, 1.0f)
-  glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+  mgSetScissor(0, 0, window.size.x, window.size.y)
+  mgClearColor(color.r, color.g, color.b, 1.0f)
+  mgClearBuffers()
 
 proc draw*(window: Window) =
   igRender()

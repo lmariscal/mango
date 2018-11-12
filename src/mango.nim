@@ -1,15 +1,16 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
 when not isMainModule:
-  import mango/[
+  import mango/core/[
     ioman,
     logger,
+    utils,
+    window
+  ], mango/graphics/[
     material,
     mesh,
     shader,
-    texture,
-    utils,
-    window
+    texture
   ]
 
   export

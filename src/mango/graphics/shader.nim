@@ -3,7 +3,7 @@
 import nimgl/opengl
 import glm
 import strutils
-import logger
+import ../core/logger
 
 type
   Shader* = object
