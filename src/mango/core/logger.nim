@@ -1,6 +1,6 @@
 # Written by Leonardo Mariscal <leo@cav.bz>, 2018
 
-import strformat, os, times, strutils, terminal
+import strformat, os, times, strutils, terminal, utils
 export strformat
 
 type
@@ -18,7 +18,7 @@ type
     time*: DateTime
   ErrorData* = object
     msg*: string
-    code*: int32
+    code*: i32
   LogProc* = proc(data: LogData)
   ErrorProc* = proc(error: ErrorData): bool
 
@@ -97,7 +97,7 @@ proc mlog*(system: string, msg: varargs[string, `$`]) =
   else:
     log(LogData(level: llMango, msg: "{system}: {joined}".fmt, time: now()))
 
-proc crash*(msg: string, code: int32 = 1, close: bool = true) =
+proc crash*(msg: string, code: i32 = 1, close: bool = true) =
   let data = LogData(level: llCrash, msg: "{msg} [{code}]".fmt, time: now())
   setBackgroundColor(bgRed)
   log(data)

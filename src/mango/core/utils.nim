@@ -3,9 +3,21 @@
 import glm
 import nimgl/imgui
 
-converter toInt32*(x: uint32): int32 = x.int32
-converter toInt32*(x: int): int32 = x.int32
-converter toUint32*(x: int32): uint32 = x.uint32
+type
+  i64* = int64
+  i32* = int32
+  i16* = int16
+  i8*  = int8
+  u64* = uint64
+  u32* = uint32
+  u16* = uint16
+  u8*  = uint8
+  f32* = float32
+  f64* = float64
+
+converter toI32*(x: u32): i32 = x.i32
+converter toI32*(x: int): i32 = x.i32
+converter toU32*(x: i32): u32 = x.u32
 converter toImVec4*(v: Vec4f): ImVec4 = cast[ImVec4](v)
 converter toImVec2*(v: Vec2f): ImVec2 = cast[ImVec2](v)
 

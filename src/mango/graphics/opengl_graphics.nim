@@ -6,11 +6,11 @@ import ../graphics
 import ../core/logger
 
 var
-  currentVertexBuffer: uint32
-  currentIndexBuffer: uint32
-  currentVertexDecl: uint32
-  currentTexture2D: uint32
-  currentShaderProgram: uint32
+  currentVertexBuffer: u32
+  currentIndexBuffer: u32
+  currentVertexDecl: u32
+  currentTexture2D: u32
+  currentShaderProgram: u32
 
 converter toString(chars: seq[cchar]): string =
   result = ""
@@ -33,13 +33,13 @@ proc mgScissorTest*(toggle: bool): void =
   else:
     glDisable(GL_SCISSOR_TEST)
 
-proc mgSetViewRect*(x1: int32, y1: int32, x2: int32, y2: int32): void =
+proc mgSetViewRect*(x1: i32, y1: i32, x2: i32, y2: i32): void =
   glViewPort(x1, y1, x2, y2)
 
-proc mgSetScissor*(x1: int32, y1: int32, x2: int32, y2: int32): void =
+proc mgSetScissor*(x1: i32, y1: i32, x2: i32, y2: i32): void =
   glScissor(x1, y1, x2, y2)
 
-proc mgClearColor*(r: float32, g: float32, b: float32, a: float32): void =
+proc mgClearColor*(r: f32, g: f32, b: f32, a: f32): void =
   glClearColor(r, g, b, a)
 
 proc mgClearBuffers*(): void =
@@ -60,12 +60,12 @@ proc newTexture2D*(): Texture2D =
   glBindTexture(GL_TEXTURE_2D, result.id)
 
   # @TODO: Make Tex Parameteri into its own option
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.int32)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.int32)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.int32)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.int32)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.i32)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.i32)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR.i32)
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR.i32)
 
-proc getTextureFormat(format: TextureFormat): uint32 =
+proc getTextureFormat(format: TextureFormat): u32 =
   case format
     of tfRed:
       result = GL_RED
@@ -98,12 +98,12 @@ proc getTextureFormat(format: TextureFormat): uint32 =
     of tfDepthStencil:
       result = GL_DEPTH_STENCIL
 
-proc use*(tex: Texture2D, active: uint32 = 0): void =
+proc use*(tex: Texture2D, active: u32 = 0): void =
   if tex.id == currentTexture2D: return
   glActiveTexture(GL_TEXTURE0 + active)
   glBindTexture(GL_TEXTURE_2D, tex.id)
 
-proc data*(tex: Texture2D, internal_format: TextureFormat, format: TextureFormat, `type`: DataType, width: int32, height: int32, data: ptr cuchar): void =
+proc data*(tex: Texture2D, internal_format: TextureFormat, format: TextureFormat, `type`: DataType, width: i32, height: i32, data: ptr cuchar): void =
   if tex.id != currentTexture2D: tex.use()
   var type_gl = 0'u32
   case `type`:
@@ -154,7 +154,7 @@ proc use*(idx: IndexBuffer): void =
   currentIndexBuffer = idx.id
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idx.id)
 
-proc getUsage(usage: DataUsage): uint32 =
+proc getUsage(usage: DataUsage): u32 =
   if usage == duStreamDraw:
     result = GL_STREAM_DRAW
   elif usage == duStreamRead:
@@ -174,49 +174,49 @@ proc getUsage(usage: DataUsage): uint32 =
   elif usage == duDynamicCopy:
     result = GL_DYNAMIC_COPY
 
-proc data*(vbo: VertexBuffer, size: int32, data: pointer, usage: DataUsage): void =
+proc data*(vbo: VertexBuffer, size: i32, data: pointer, usage: DataUsage): void =
   if currentVertexBuffer != vbo.id: vbo.use()
   glBufferData(GL_ARRAY_BUFFER, size, data, usage.getUsage())
 
-proc data*[N, T](vbo: VertexBuffer, size: int32, data: var array[N, T], usage: DataUsage): void =
+proc data*[N, T](vbo: VertexBuffer, size: i32, data: var array[N, T], usage: DataUsage): void =
   vbo.data(size, data[0].addr, usage)
 
-proc data*[T](vbo: VertexBuffer, size: int32, data: var seq[T], usage: DataUsage): void =
+proc data*[T](vbo: VertexBuffer, size: i32, data: var seq[T], usage: DataUsage): void =
   vbo.data(size, data[0].addr, usage)
 
-proc subData*(vbo: VertexBuffer, offset: int32, size: int32, data: pointer): void =
+proc subData*(vbo: VertexBuffer, offset: i32, size: i32, data: pointer): void =
   if currentVertexBuffer != vbo.id: vbo.use()
   glBufferSubData(GL_ARRAY_BUFFER, offset, size, data)
 
-proc subData*[N, T](vbo: VertexBuffer, offset: int32, size: int32, data: var array[N, T]): void =
+proc subData*[N, T](vbo: VertexBuffer, offset: i32, size: i32, data: var array[N, T]): void =
   vbo.subData(offset, size, data[0].addr)
 
-proc subData*[T](vbo: VertexBuffer, offset: int32, size: int32, data: var seq[T]): void =
+proc subData*[T](vbo: VertexBuffer, offset: i32, size: i32, data: var seq[T]): void =
   vbo.subData(offset, size, data[0].addr)
 
-proc data*(idx: IndexBuffer, size: int32, data: pointer, usage: DataUsage): void =
+proc data*(idx: IndexBuffer, size: i32, data: pointer, usage: DataUsage): void =
   if currentIndexBuffer != idx.id: idx.use()
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, usage.getUsage())
 
-proc data*[N, T](idx: IndexBuffer, size: int32, data: var array[N, T], usage: DataUsage): void =
+proc data*[N, T](idx: IndexBuffer, size: i32, data: var array[N, T], usage: DataUsage): void =
   idx.data(size, data[0].addr, usage)
 
-proc data*[T](idx: IndexBuffer, size: int32, data: var seq[T], usage: DataUsage): void =
+proc data*[T](idx: IndexBuffer, size: i32, data: var seq[T], usage: DataUsage): void =
   idx.data(size, data[0].addr, usage)
 
-proc subData*(idx: IndexBuffer, offset: int32, size: int32, data: pointer): void =
+proc subData*(idx: IndexBuffer, offset: i32, size: i32, data: pointer): void =
   if currentIndexBuffer != idx.id: idx.use()
   glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data)
 
-proc subData*[N, T](idx: IndexBuffer, offset: int32, size: int32, data: var array[N, T]): void =
+proc subData*[N, T](idx: IndexBuffer, offset: i32, size: i32, data: var array[N, T]): void =
   idx.subData(offset, size, data[0].addr)
 
-proc subData*[T](idx: IndexBuffer, offset: int32, size: int32, data: var seq[T]): void =
+proc subData*[T](idx: IndexBuffer, offset: i32, size: i32, data: var seq[T]): void =
   idx.subData(offset, size, data[0].addr)
 
-proc drawElements*(vao: VertexDecl, mode: DrawMode, count: int32, `type`: DataType, offset: pointer): void =
-  var draw_mode: uint32 = 0
-  var draw_type: uint32 = 0
+proc drawElements*(vao: VertexDecl, mode: DrawMode, count: i32, `type`: DataType, offset: pointer): void =
+  var draw_mode: u32 = 0
+  var draw_type: u32 = 0
   case mode:
     of dmPoints:
       draw_mode = GL_POINTS
@@ -252,14 +252,14 @@ proc drawElements*(vao: VertexDecl, mode: DrawMode, count: int32, `type`: DataTy
 
   glDrawElements(draw_mode, count, draw_type, offset)
 
-proc drawElements*(vao: VertexDecl, mode: DrawMode, count: int32, `type`: DataType, offset: int32): void =
+proc drawElements*(vao: VertexDecl, mode: DrawMode, count: i32, `type`: DataType, offset: i32): void =
   vao.use()
   vao.drawElements(mode, count, `type`, cast[pointer](offset))
 
 # @TODO: In the future add ability to set attrib pos
-proc add*(vao: var VertexDecl, `type`: VertexAttrib, stride: int32, offset: int32): void =
-  var data_size: int32 = 0
-  var data_type: uint32 = 0
+proc add*(vao: var VertexDecl, `type`: VertexAttrib, stride: i32, offset: i32): void =
+  var data_size: i32 = 0
+  var data_type: u32 = 0
   case `type`
     of vaFloat1:
       data_size = 1
@@ -331,21 +331,21 @@ proc add*(vao: var VertexDecl, `type`: VertexAttrib, stride: int32, offset: int3
     glVertexAttribLPointer(vao.attribs, data_size, data_type, stride, cast[pointer](offset))
   vao.attribs = vao.attribs + 1'u32
 
-proc statusShader(shader: uint32, `type`: string, path: string) =
-  var status: int32
+proc statusShader(shader: u32, `type`: string, path: string) =
+  var status: i32
   shader.glGetShaderiv(GL_COMPILE_STATUS, status.addr)
   if status != GL_TRUE.ord:
-    var length: int32
+    var length: i32
     var message = newSeq[cchar](1024)
     shader.glGetShaderInfoLog(1024, length.addr, message[0].addr)
     error("ShaderManager", "failed to compile " & `type` & " shader \"" & path & "\":")
     error("ShaderManager", message.toString())
 
-proc statusProgram(program: uint32) =
-  var status: int32
+proc statusProgram(program: u32) =
+  var status: i32
   program.glGetProgramiv(GL_LINK_STATUS, status.addr)
   if status != GL_TRUE.ord:
-    var length: int32
+    var length: i32
     var message = newSeq[cchar](1024)
     program.glGetProgramInfoLog(1024, length.addr, message[0].addr)
     error("ShaderManager", "failed to link shader program {program}".fmt)
@@ -377,49 +377,49 @@ proc clean*(program: ShaderProgram): void =
   program.fragment.id.glDeleteShader()
   program.id.glDeleteProgram()
 
-proc uniformLocation*(program: ShaderProgram, name: string): int32 =
+proc uniformLocation*(program: ShaderProgram, name: string): i32 =
   if currentShaderProgram != program.id: program.use()
   result = program.id.glGetUniformLocation(name.cstring)
 
-proc attribLocation*(program: ShaderProgram, name: string): int32 =
+proc attribLocation*(program: ShaderProgram, name: string): i32 =
   if currentShaderProgram != program.id: program.use()
   result = program.id.glGetAttribLocation(name.cstring)
 
-proc uniformMatrix*(program: ShaderProgram, location: int32, mat: var Mat4f): void =
+proc uniformMatrix*(program: ShaderProgram, location: i32, mat: var Mat4f): void =
   if location < 0: return
   if currentShaderProgram != program.id: program.use()
   glUniformMatrix4fv(location, 1, false, mat.caddr)
 
-proc uniformMatrix*(program: ShaderProgram, location: int32, mat: var Mat3f): void =
+proc uniformMatrix*(program: ShaderProgram, location: i32, mat: var Mat3f): void =
   if location < 0: return
   if currentShaderProgram != program.id: program.use()
   glUniformMatrix3fv(location, 1, false, mat.caddr)
 
-proc uniformMatrix*(program: ShaderProgram, location: int32, mat: var Mat2f): void =
+proc uniformMatrix*(program: ShaderProgram, location: i32, mat: var Mat2f): void =
   if location < 0: return
   if currentShaderProgram != program.id: program.use()
   glUniformMatrix2fv(location, 1, false, mat.caddr)
 
 
-proc uniformVector*(program: ShaderProgram, location: int32, vec: var Vec4f): void =
+proc uniformVector*(program: ShaderProgram, location: i32, vec: var Vec4f): void =
   if location < 0: return
   if currentShaderProgram != program.id: program.use()
   glUniform4fv(location, 1, vec.caddr)
 
-proc uniformVector*(program: ShaderProgram, location: int32, vec: var Vec3f): void =
+proc uniformVector*(program: ShaderProgram, location: i32, vec: var Vec3f): void =
   if location < 0: return
   if currentShaderProgram != program.id: program.use()
   glUniform3fv(location, 1, vec.caddr)
 
-proc uniformVector*(program: ShaderProgram, location: int32, vec: var Vec2f): void =
+proc uniformVector*(program: ShaderProgram, location: i32, vec: var Vec2f): void =
   if location < 0: return
   if currentShaderProgram != program.id: program.use()
   glUniform2fv(location, 1, vec.caddr)
 
-proc uniformInt*(program: ShaderProgram, location: int32, val: int32): void =
+proc uniformInt*(program: ShaderProgram, location: i32, val: i32): void =
   if location < 0: return
   if currentShaderProgram != program.id: program.use()
   glUniform1i(location, val)
 
-proc mgLineWidth*(width: float32): void =
+proc mgLineWidth*(width: f32): void =
   glLineWidth(width)

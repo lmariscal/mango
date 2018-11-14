@@ -72,34 +72,34 @@ proc clean*(shader: Shader): void =
   shader.program.clean()
 
 # @TODO: Make a cache for this
-proc getLocation*(shader: Shader, name: string): int32 =
+proc getLocation*(shader: Shader, name: string): i32 =
   result = shader.program.uniformLocation(name)
   if result == -1:
     error("ShaderManager", "{shader.path} uniform {name} doesn't exist".fmt)
 
 # @TODO: Make a cache for this
-proc getAttrib*(shader: Shader, name: string): int32 =
+proc getAttrib*(shader: Shader, name: string): i32 =
   result = shader.program.attribLocation(name)
   if result == -1:
     error("ShaderManager", "{shader.path} attrib {name} doesn't exist".fmt)
 
-proc setMat*(shader: Shader, location: int32, mat: var Mat4f) =
+proc setMat*(shader: Shader, location: i32, mat: var Mat4f) =
   shader.program.uniformMatrix(location, mat)
 
-proc setMat*(shader: Shader, location: int32, mat: var Mat3f) =
+proc setMat*(shader: Shader, location: i32, mat: var Mat3f) =
   shader.program.uniformMatrix(location, mat)
 
-proc setMat*(shader: Shader, location: int32, mat: var Mat2f) =
+proc setMat*(shader: Shader, location: i32, mat: var Mat2f) =
   shader.program.uniformMatrix(location, mat)
 
-proc setVec*(shader: Shader, location: int32, vec: var Vec4f) =
+proc setVec*(shader: Shader, location: i32, vec: var Vec4f) =
   shader.program.uniformVector(location, vec)
 
-proc setVec*(shader: Shader, location: int32, vec: var Vec3f) =
+proc setVec*(shader: Shader, location: i32, vec: var Vec3f) =
   shader.program.uniformVector(location, vec)
 
-proc setVec*(shader: Shader, location: int32, vec: var Vec2f) =
+proc setVec*(shader: Shader, location: i32, vec: var Vec2f) =
   shader.program.uniformVector(location, vec)
 
-proc setInt*(shader: Shader, location: int32, val: int32) =
+proc setInt*(shader: Shader, location: i32, val: i32) =
   shader.program.uniformInt(location, val)

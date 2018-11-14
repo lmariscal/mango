@@ -13,7 +13,7 @@ export glfw
 
 type
   Window* = ref object
-    id*: int32
+    id*: i32
     size*: Vec2i
     fbSize*: Vec2i
     raw*: GLFWWindow
@@ -26,19 +26,19 @@ var
   glfwInitiated: bool = false
   glInitiated: bool = false
 
-template igHI(v: float32): ImVec4 =
+template igHI(v: f32): ImVec4 =
   ImVec4(x: 0.502f, y: 0.075f, z: 0.256f, w: v)
 
-template igMED(v: float32): ImVec4 =
+template igMED(v: f32): ImVec4 =
   ImVec4(x: 0.455f, y: 0.198f, z: 0.301f, w: v)
 
-template igLOW(v: float32): ImVec4 =
+template igLOW(v: f32): ImVec4 =
   ImVec4(x: 0.232f, y: 0.201f, z: 0.271f, w: v)
 
-template igBG(v: float32): ImVec4 =
+template igBG(v: f32): ImVec4 =
   ImVec4(x: 0.200f, y: 0.220f, z: 0.270f, w: v)
 
-template igTEXT(v: float32): ImVec4 =
+template igTEXT(v: f32): ImVec4 =
   ImVec4(x: 0.860f, y: 0.930f, z: 0.890f, w: v)
 
 proc igCherryTheme(): void =
@@ -102,20 +102,20 @@ proc igCherryTheme(): void =
 proc glfwErrorEvent(error: GLFWErrorCode, description: cstring): void {.cdecl.} =
   error("GLFW", $description)
 
-proc keyEvent(window: GLFWWindow, key: GLFWKey, scancode: int32, action: GLFWKeyAction, mods: GLFWKeyMod): void {.cdecl.} =
+proc keyEvent(window: GLFWWindow, key: GLFWKey, scancode: i32, action: GLFWKeyAction, mods: GLFWKeyMod): void {.cdecl.} =
   ioman.keyEvent(key, action != kaRelease)
   igGlfwKeyCallback(window, key, scancode, action, mods)
 
-proc scrollEvent(window: GLFWWindow, xoff: float64, yoff: float64): void {.cdecl.} =
+proc scrollEvent(window: GLFWWindow, xoff: f64, yoff: f64): void {.cdecl.} =
   igGlfwScrollCallback(window, xoff, yoff)
 
-proc charEvent(window: GLFWWindow, code: uint32): void {.cdecl.} =
+proc charEvent(window: GLFWWindow, code: u32): void {.cdecl.} =
   igGlfwCharCallback(window, code)
 
 proc mouseEvent(window: GLFWWindow, button: GLFWMouseButton, action: GLFWMouseAction, mods: GLFWKeyMod): void {.cdecl.} =
   igGlfwMouseCallback(window, button, action, mods)
 
-proc resizeEvent(window: GLFWWindow, width: int32, height: int32): void {.cdecl.} =
+proc resizeEvent(window: GLFWWindow, width: i32, height: i32): void {.cdecl.} =
   for i in 0 ..< windowsArray.len:
     if windowsArray[i].raw == window:
       windowsArray[i].size.x = width
@@ -123,13 +123,13 @@ proc resizeEvent(window: GLFWWindow, width: int32, height: int32): void {.cdecl.
       if windowsArray[i].resizeProc != nil:
         windowsArray[i].resizeProc(windowsArray[i])
 
-proc frameBufferResizeEvent(window: GLFWWindow, width: int32, height: int32): void {.cdecl.} =
+proc frameBufferResizeEvent(window: GLFWWindow, width: i32, height: i32): void {.cdecl.} =
   mgSetViewRect(0'i32, 0'i32, width, height)
 
-proc ratio*(window: Window): float32 =
-  window.size.x.float32 / window.size.y.float32
+proc ratio*(window: Window): f32 =
+  window.size.x.f32 / window.size.y.f32
 
-proc newWindow*(width: int32, height: int32, title: string = "Mango", decorated: bool = true, resizable: bool = false): Window =
+proc newWindow*(width: i32, height: i32, title: string = "Mango", decorated: bool = true, resizable: bool = false): Window =
   result = new Window
   discard glfwSetErrorCallback(glfwErrorEvent)
   if not glfwInitiated:
@@ -174,7 +174,7 @@ proc newWindow*(width: int32, height: int32, title: string = "Mango", decorated:
   assert igOpenGL3Init()
 
   igCherryTheme()
-  result.id = windowsArray.len.int32
+  result.id = windowsArray.len.i32
   windowsArray.add(result)
 
 proc update*(window: Window) =

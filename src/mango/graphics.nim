@@ -5,21 +5,21 @@ export utils
 
 type
   VertexDecl* = object
-    id*: uint32
-    attribs*: uint32
+    id*: u32
+    attribs*: u32
   VertexBuffer* = object
-    id*: uint32
+    id*: u32
   IndexBuffer* = object
-    id*: uint32
-    len*: uint32
+    id*: u32
+    len*: u32
   Texture2D* = object
-    id*: uint32
+    id*: u32
   ShaderVertex* = object
-    id*: uint32
+    id*: u32
   ShaderFragment* = object
-    id*: uint32
+    id*: u32
   ShaderProgram* = object
-    id*: uint32
+    id*: u32
     vertex*: ShaderVertex
     fragment*: ShaderFragment
   DataUsage* = enum
@@ -104,11 +104,11 @@ type
     tfDepthComponent
     tfDepthStencil
 
-template fSize*(num: int): int32 =
-  int32(float32.sizeof * num)
+template fSize*(num: int): i32 =
+  i32(f32.sizeof * num)
 
-template iSize*(num: int): int32 =
-  int32(int32.sizeof * num)
+template iSize*(num: int): i32 =
+  i32(i32.sizeof * num)
 
 when defined(vulkan):
   import graphics/vulkan_graphics

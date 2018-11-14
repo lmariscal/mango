@@ -6,7 +6,7 @@ import glm
 type
   Person = object
     name: string
-    age: int32
+    age: i32
   ShaderType = enum
     stGoraud = "Goraud Shader"
     stPhong = "Phong Shader"
@@ -22,7 +22,7 @@ proc main() =
   let win = newWindow(1280, 720, "Rotating Cube", true, true)
 
   var
-    vertices: seq[float32] = @[
+    vertices: seq[f32] = @[
      -0.5f, -0.5f, -0.5f,
       0.5f, -0.5f, -0.5f,
       0.5f,  0.5f, -0.5f,
@@ -65,7 +65,7 @@ proc main() =
      -0.5f,  0.5f,  0.5f,
      -0.5f,  0.5f, -0.5f,
     ]
-    uvs: seq[float32] = @[
+    uvs: seq[f32] = @[
       0.0f, 0.0f,
       1.0f, 0.0f,
       1.0f, 1.0f,
@@ -108,7 +108,7 @@ proc main() =
       0.0f, 0.0f,
       0.0f, 1.0f,
     ]
-    normals_pos: seq[float32] = @[
+    normals_pos: seq[f32] = @[
       0.0f,  0.0f, -1.0f,
       0.0f,  0.0f, -1.0f,
       0.0f,  0.0f, -1.0f,
@@ -152,7 +152,7 @@ proc main() =
       0.0f,  1.0f,  0.0f
     ]
 
-    indices: seq[uint32] = @[]
+    indices: seq[u32] = @[]
 
   const
     goraudData  = readShader("res/shaders/goraud.glsl")
@@ -202,8 +202,8 @@ proc main() =
   phong.setInt(uPTex, 0)
   phong.setInt(uPNormal, 1)
 
-  var rot: float32 = 30
-  var zaxis: float32 = -5
+  var rot: f32 = 30
+  var zaxis: f32 = -5
   var lightPos = vec3(1.2f, 1.0f, 2.0f)
 
   while win.isOpen():

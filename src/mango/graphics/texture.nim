@@ -7,9 +7,9 @@ import ../graphics
 type
   Texture* = object
     data*: Texture2D
-    width*: uint32
-    height*: uint32
-    channels*: uint32
+    width*: u32
+    height*: u32
+    channels*: u32
 
 proc newTexture*(path: string): Texture =
   let img = stbiLoad(path.cstring)
@@ -27,7 +27,7 @@ proc newTexture*(path: string): Texture =
 
   img.imageFree()
 
-proc use*(tex: Texture, active: uint32 = 0): void =
+proc use*(tex: Texture, active: u32 = 0): void =
   tex.data.use(active)
 
 proc clean*(tex: var Texture): void =

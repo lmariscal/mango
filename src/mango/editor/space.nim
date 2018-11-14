@@ -9,43 +9,43 @@ import glm
 type Space* = object
   mesh*: LineMesh
   shader*: Shader
-  uColor*: int32
-  uModel*: int32
-  uView*: int32
-  uProjection*: int32
+  uColor*: i32
+  uModel*: i32
+  uView*: i32
+  uProjection*: i32
 
-proc newSpace*(width: uint32, height: uint32): Space =
+proc newSpace*(width: u32, height: u32): Space =
   var
-    vertices: seq[float32] = @[]
-    indices: seq[uint32] = @[]
+    vertices: seq[f32] = @[]
+    indices: seq[u32] = @[]
 
   for i in 0..width:
-    vertices.add((-width.float32 / 2.0f) + i.float32)
+    vertices.add((-width.f32 / 2.0f) + i.f32)
     vertices.add(0.0f)
-    vertices.add(-height.float32 / 2.0f)
+    vertices.add(-height.f32 / 2.0f)
 
-    vertices.add((-width.float32 / 2.0f) + i.float32)
+    vertices.add((-width.f32 / 2.0f) + i.f32)
     vertices.add(0.0f)
-    vertices.add(height.float32 / 2.0f)
+    vertices.add(height.f32 / 2.0f)
 
   for i in 0..width:
     if (i * 2) == width or ((i * 2) + 1) == width + 1: continue
-    indices.add(i.uint32 * 2)
-    indices.add((i.uint32 * 2) + 1)
+    indices.add(i.u32 * 2)
+    indices.add((i.u32 * 2) + 1)
 
   for i in 0..height:
-    vertices.add(-width.float32 / 2.0f)
+    vertices.add(-width.f32 / 2.0f)
     vertices.add(0.0f)
-    vertices.add((-height.float32 / 2.0f) + i.float32)
+    vertices.add((-height.f32 / 2.0f) + i.f32)
 
-    vertices.add(width.float32 / 2.0f)
+    vertices.add(width.f32 / 2.0f)
     vertices.add(0.0f)
-    vertices.add((-height.float32 / 2.0f) + i.float32)
+    vertices.add((-height.f32 / 2.0f) + i.f32)
 
   for i in 0..height + 1:
     if (i * 2) == height + 2 or ((i * 2) + 1) == height + 3: continue
-    indices.add((i.uint32 * 2) + (width * 2))
-    indices.add((i.uint32 * 2) + (width * 2) + 1)
+    indices.add((i.u32 * 2) + (width * 2))
+    indices.add((i.u32 * 2) + (width * 2) + 1)
 
   indices.add([width, width + 1'u32, (width * 2) + height + 2'u32, (width * 2) + height + 3'u32])
 
@@ -74,13 +74,13 @@ proc use*(space: var Space, proj: var Mat4f): void =
   mgLineWidth(2.0f) # Not all platforms support width, but there's color
   color = rgb(33f, 150f, 243f)
   space.shader.setVec(space.uColor, color)
-  space.mesh.use(uint32.sizeof() * 66, 2)
+  space.mesh.use(u32.sizeof() * 66, 2)
   color = rgb(244f, 67f, 54f)
   space.shader.setVec(space.uColor, color)
-  space.mesh.use(uint32.sizeof() * 68, 2)
+  space.mesh.use(u32.sizeof() * 68, 2)
   mgLineWidth(1.0f)
 
-  var lineWidthRange: array[2, float32]
+  var lineWidthRange: array[2, f32]
   glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, lineWidthRange[0].addr)
 
   let io = igGetIO()

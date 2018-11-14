@@ -5,14 +5,14 @@ import ../graphics
 
 type
   Mesh* = object of RootObj
-    vertices*: seq[float32]
-    indices*: seq[uint32]
+    vertices*: seq[f32]
+    indices*: seq[u32]
     vao*: VertexDecl
     vbo*: VertexBuffer
     idx*: IndexBuffer
   LineMesh* = object of Mesh
 
-proc newLineMesh*(vertices: var seq[float32], indices: var seq[uint32]): LineMesh =
+proc newLineMesh*(vertices: var seq[f32], indices: var seq[u32]): LineMesh =
   result.vertices = vertices
   result.indices = indices
   result.vao = newVertexDecl()
@@ -22,8 +22,8 @@ proc newLineMesh*(vertices: var seq[float32], indices: var seq[uint32]): LineMes
   result.vao.use()
 
   if indices.len == 0:
-    for i in 0 ..< (vertices.len / 3).int32:
-      result.indices.add(i.uint32)
+    for i in 0 ..< (vertices.len / 3).i32:
+      result.indices.add(i.u32)
 
   result.vbo.use()
   result.vbo.data(fSize(vertices.len), vertices, duStaticDraw)
@@ -33,7 +33,7 @@ proc newLineMesh*(vertices: var seq[float32], indices: var seq[uint32]): LineMes
 
   result.vao.add(vaFloat3, fSize(3), 0)
 
-proc newMesh*(vertices: var seq[float32], indices: var seq[uint32]): Mesh =
+proc newMesh*(vertices: var seq[f32], indices: var seq[u32]): Mesh =
   result.vertices = vertices
   result.indices = indices
   result.vao = newVertexDecl()
@@ -43,8 +43,8 @@ proc newMesh*(vertices: var seq[float32], indices: var seq[uint32]): Mesh =
   result.vao.use()
 
   if indices.len == 0:
-    for i in 0 ..< (vertices.len / 3).int32:
-      result.indices.add(i.uint32)
+    for i in 0 ..< (vertices.len / 3).i32:
+      result.indices.add(i.u32)
 
   result.vbo.use()
   result.vbo.data(fSize(vertices.len), vertices, duStaticDraw)
@@ -54,7 +54,7 @@ proc newMesh*(vertices: var seq[float32], indices: var seq[uint32]): Mesh =
 
   result.vao.add(vaFloat3, fSize(3), 0)
 
-proc newMesh*(vertices: var seq[float32], uvs: var seq[float32], normals: var seq[float32], indices: var seq[uint32]): Mesh =
+proc newMesh*(vertices: var seq[f32], uvs: var seq[f32], normals: var seq[f32], indices: var seq[u32]): Mesh =
   result.vertices = vertices
   result.indices = indices
   result.vao = newVertexDecl()
@@ -64,8 +64,8 @@ proc newMesh*(vertices: var seq[float32], uvs: var seq[float32], normals: var se
   result.vao.use()
 
   if indices.len == 0:
-    for i in 0 ..< (vertices.len / 3).int32:
-      result.indices.add(i.uint32)
+    for i in 0 ..< (vertices.len / 3).i32:
+      result.indices.add(i.u32)
 
   result.vbo.use()
   result.vbo.data(fSize(vertices.len + uvs.len + normals.len), vertices, duStaticDraw)
@@ -85,10 +85,10 @@ proc use*(mesh: Mesh) =
 proc use*(mesh: LineMesh) =
   mesh.vao.drawElements(dmLines, mesh.indices.len, dtUInt, 0)
 
-proc use*(mesh: Mesh, offset: int32, size: int32) =
+proc use*(mesh: Mesh, offset: i32, size: i32) =
   mesh.vao.drawElements(dmTriangles, size, dtUInt, offset)
 
-proc use*(mesh: LineMesh, offset: int32, size: int32) =
+proc use*(mesh: LineMesh, offset: i32, size: i32) =
   mesh.vao.drawElements(dmLines, size, dtUInt, offset)
 
 proc clean*(mesh: var Mesh) =

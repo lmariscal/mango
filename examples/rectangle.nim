@@ -6,7 +6,7 @@ import glm
 type
   Person = object
     name: string
-    age: int32
+    age: i32
 
 proc main() =
   when defined(release):
@@ -18,26 +18,26 @@ proc main() =
   let win = newWindow(800, 600, "Rectangle")
 
   var
-    vertices: seq[float32] = @[
+    vertices: seq[f32] = @[
       0.5f,  0.5f, 0.0f,
       0.5f, -0.5f, 0.0f,
      -0.5f, -0.5f, 0.0f,
      -0.5f,  0.5f, 0.0f,
     ]
-    uvs: seq[float32] = @[
+    uvs: seq[f32] = @[
       1.0f, 1.0f,
       1.0f, 0.0f,
       0.0f, 0.0f,
       0.0f, 1.0f,
     ]
-    normals: seq[float32] = @[
+    normals: seq[f32] = @[
       0.0f, 1.0f, 1.0f,
       0.0f, 1.0f, 0.0f,
       1.0f, 0.0f, 0.0f,
       0.0f, 0.0f, 1.0f
     ]
 
-    indices: seq[uint32] = @[
+    indices: seq[u32] = @[
       0'u32, 1, 3,
       1, 2, 3
     ]
@@ -56,7 +56,7 @@ proc main() =
   # Tex Load
 
   var img = newTexture("examples/res/images/box.jpg")
-  var rot: float32 = 30
+  var rot: f32 = 30
 
   while win.isOpen():
     # updat
