@@ -33,6 +33,14 @@ proc mgScissorTest*(toggle: bool): void =
   else:
     glDisable(GL_SCISSOR_TEST)
 
+proc mgCullTest*(toggle: bool): void =
+  if toggle:
+    glEnable(GL_CULL_FACE)
+    glCullFace(GL_BACK)
+    glFrontFace(GL_CCW)
+  else:
+    glDisable(GL_CULL_FACE)
+
 proc mgSetViewRect*(x1: i32, y1: i32, x2: i32, y2: i32): void =
   glViewPort(x1, y1, x2, y2)
 
@@ -423,3 +431,6 @@ proc uniformInt*(program: ShaderProgram, location: i32, val: i32): void =
 
 proc mgLineWidth*(width: f32): void =
   glLineWidth(width)
+
+proc mgWireframe*(toggle: bool): void =
+  glPolygonMode(GL_FRONT_AND_BACK, if toggle: GL_LINE else: GL_FILL)

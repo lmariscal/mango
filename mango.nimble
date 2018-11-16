@@ -22,5 +22,8 @@ task rotating_cube, "run the rotating cube example":
 task rectangle, "run the rectangle example":
   exec("nim c -r examples/rectangle.nim")
 
+task terrain, "run the terrain example":
+  exec("nim c -r examples/terrain.nim")
+
 task run, "run the editor":
   exec("nim c -r -o:mango src/mango.nim")
