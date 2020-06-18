@@ -1,6 +1,0 @@
-== Mango Engine
-
-2D and 3D Game Engine made with link:nim-lang.org[Nim] using link:nimgl.org[NimGL].
-
-_This engine is in the earliest of the early phases, so touch it with a stick and don't forget to wash your hands. +
-But still give it some love <3._
