@@ -1,5 +1,3 @@
-# Written by Leonardo Mariscal <leo@cav.bz>, 2018
-
 import mango
 import glm
 
@@ -219,7 +217,7 @@ proc main() =
     var trans = mat4(1.0f).translate(0, 0, zaxis).rotate(rot.radians(), vec3(1f, 1f, 0f))
     var view  = mat4(1.0f)
 
-    if keyR.isPressed():
+    if GLFWKey.R.isPressed():
       rot += 1f
       if rot >= 360:
         rot = 0f

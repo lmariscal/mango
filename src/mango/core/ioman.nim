@@ -6,17 +6,17 @@ import glm
 export glfw.GLFWKey
 
 var
-  keys: array[keyLast.ord, bool]
-  mouse: array[mbLast.ord, bool]
-  pad: array[jsLast.ord, bool]
+  keys: array[GLFWKey.high.ord, bool]
+  mouse: array[GLFWMouseButton.high.ord, bool]
+  pad: array[GLFWGamepadButton.high.ord, bool]
 
-  rKeys: array[keyLast.ord, bool]
-  rMouse: array[mbLast.ord, bool]
-  rPad: array[jsLast.ord, bool]
+  rKeys: array[GLFWKey.high.ord, bool]
+  rMouse: array[GLFWMouseButton.high.ord, bool]
+  rPad: array[GLFWGamepadButton.high.ord, bool]
 
-  pKeys: array[keyLast.ord, bool]
-  pMouse: array[mbLast.ord, bool]
-  pPad: array[jsLast.ord, bool]
+  pKeys: array[GLFWKey.high.ord, bool]
+  pMouse: array[GLFWMouseButton.high.ord, bool]
+  pPad: array[GLFWGamepadButton.high.ord, bool]
 
   mousePos: Vec2f
 
@@ -42,15 +42,15 @@ proc mouseEvent*(pos: Vec2f) =
   mousePos = pos
 
 proc gamePadPresent*(): bool =
-  glfwJoystickPresent(js1)
+  glfwJoystickPresent(GLFWJoystick.K1.ord) == 1
 
 proc updateGamePad*() =
   ## Only needed if you want to use gamepad
   if not gamePadPresent(): return
 
   var state: GLFWGamePadState
-  if glfwGetGamepadState(js1, state.addr):
-    for i in 0 ..< gpLast.ord:
+  if glfwGetGamepadState(GLFWJoystick.K1.ord, state.addr) == 1:
+    for i in 0 ..< GLFWGamepadButton.low.ord:
       let pressed = state.buttons[i]
       if pad[i] and not pressed:
         rPad[i] = true

@@ -1,5 +1,3 @@
-# Written by Leonardo Mariscal <leo@cav.bz>, 2018
-
 import mango
 import glm
 
@@ -71,7 +69,7 @@ proc main() =
     var view  = mat4(1.0f)
     trans = rotate(trans, rot.radians(), vec3(0f, 0f, 1f))
 
-    if keyR.isPressed():
+    if GLFWKey.R.isPressed():
       rot += 1f
       if rot >= 360:
         rot = 0f

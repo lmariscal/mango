@@ -1,5 +1,3 @@
-# Written by Leonardo Mariscal <leo@cav.bz>, 2018
-
 import nimgl/[glfw, imgui]
 import ioman
 import logger
@@ -45,40 +43,40 @@ proc igCherryTheme(): void =
   # Thanks r-lyeh
   var style = igGetStyle()
 
-  style.colors[ImGuiCol_Text]                 = igTEXT(0.78f)
-  style.colors[ImGuiCol_TextDisabled]         = igTEXT(0.28f)
-  style.colors[ImGuiCol_WindowBg]             = ImVec4(x: 0.13f, y: 0.14f, z: 0.17f, w: 1.00f)
-  style.colors[ImGuiCol_PopupBg]              = igBG(0.9f)
-  style.colors[ImGuiCol_Border]               = ImVec4(x: 0.31f, y: 0.31f, z: 1.00f, w: 0.00f)
-  style.colors[ImGuiCol_BorderShadow]         = ImVec4(x: 0.00f, y: 0.00f, z: 0.00f, w: 0.00f)
-  style.colors[ImGuiCol_FrameBg]              = igBG(1.00f)
-  style.colors[ImGuiCol_FrameBgHovered]       = igMED(0.78f)
-  style.colors[ImGuiCol_FrameBgActive]        = igMED(1.00f)
-  style.colors[ImGuiCol_TitleBg]              = igLOW(1.00f)
-  style.colors[ImGuiCol_TitleBgActive]        = igHI(1.00f)
-  style.colors[ImGuiCol_TitleBgCollapsed]     = igBG(0.75f)
-  style.colors[ImGuiCol_MenuBarBg]            = igBG(0.47f)
-  style.colors[ImGuiCol_ScrollbarBg]          = igBG(1.00f)
-  style.colors[ImGuiCol_ScrollbarGrab]        = ImVec4(x: 0.09f, y: 0.15f, z: 0.16f, w: 1.00f)
-  style.colors[ImGuiCol_ScrollbarGrabHovered] = igMED(0.78f)
-  style.colors[ImGuiCol_ScrollbarGrabActive]  = igMED(1.00f)
-  style.colors[ImGuiCol_CheckMark]            = ImVec4(x: 0.71f, y: 0.22f, z: 0.27f, w: 1.00f)
-  style.colors[ImGuiCol_SliderGrab]           = ImVec4(x: 0.47f, y: 0.77f, z: 0.83f, w: 0.14f)
-  style.colors[ImGuiCol_SliderGrabActive]     = ImVec4(x: 0.71f, y: 0.22f, z: 0.27f, w: 1.00f)
-  style.colors[ImGuiCol_Button]               = ImVec4(x: 0.47f, y: 0.77f, z: 0.83f, w: 0.14f)
-  style.colors[ImGuiCol_ButtonHovered]        = igMED(0.86f)
-  style.colors[ImGuiCol_ButtonActive]         = igMED(1.00f)
-  style.colors[ImGuiCol_Header]               = igMED(0.76f)
-  style.colors[ImGuiCol_HeaderHovered]        = igMED(0.86f)
-  style.colors[ImGuiCol_HeaderActive]         = igHI(1.00f)
-  style.colors[ImGuiCol_ResizeGrip]           = ImVec4(x: 0.47f, y: 0.77f, z: 0.83f, w: 0.04f)
-  style.colors[ImGuiCol_ResizeGripHovered]    = igMED(0.78f)
-  style.colors[ImGuiCol_ResizeGripActive]     = igMED(1.00f)
-  style.colors[ImGuiCol_PlotLines]            = igTEXT(0.63f)
-  style.colors[ImGuiCol_PlotLinesHovered]     = igMED(1.00f)
-  style.colors[ImGuiCol_PlotHistogram]        = igTEXT(0.63f)
-  style.colors[ImGuiCol_PlotHistogramHovered] = igMED(1.00f)
-  style.colors[ImGuiCol_TextSelectedBg]       = igMED(0.43f)
+  style.colors[ImGuiCol.Text.ord]                 = igTEXT(0.78f)
+  style.colors[ImGuiCol.TextDisabled.ord]         = igTEXT(0.28f)
+  style.colors[ImGuiCol.WindowBg.ord]             = ImVec4(x: 0.13f, y: 0.14f, z: 0.17f, w: 1.00f)
+  style.colors[ImGuiCol.PopupBg.ord]              = igBG(0.9f)
+  style.colors[ImGuiCol.Border.ord]               = ImVec4(x: 0.31f, y: 0.31f, z: 1.00f, w: 0.00f)
+  style.colors[ImGuiCol.BorderShadow.ord]         = ImVec4(x: 0.00f, y: 0.00f, z: 0.00f, w: 0.00f)
+  style.colors[ImGuiCol.FrameBg.ord]              = igBG(1.00f)
+  style.colors[ImGuiCol.FrameBgHovered.ord]       = igMED(0.78f)
+  style.colors[ImGuiCol.FrameBgActive.ord]        = igMED(1.00f)
+  style.colors[ImGuiCol.TitleBg.ord]              = igLOW(1.00f)
+  style.colors[ImGuiCol.TitleBgActive.ord]        = igHI(1.00f)
+  style.colors[ImGuiCol.TitleBgCollapsed.ord]     = igBG(0.75f)
+  style.colors[ImGuiCol.MenuBarBg.ord]            = igBG(0.47f)
+  style.colors[ImGuiCol.ScrollbarBg.ord]          = igBG(1.00f)
+  style.colors[ImGuiCol.ScrollbarGrab.ord]        = ImVec4(x: 0.09f, y: 0.15f, z: 0.16f, w: 1.00f)
+  style.colors[ImGuiCol.ScrollbarGrabHovered.ord] = igMED(0.78f)
+  style.colors[ImGuiCol.ScrollbarGrabActive.ord]  = igMED(1.00f)
+  style.colors[ImGuiCol.CheckMark.ord]            = ImVec4(x: 0.71f, y: 0.22f, z: 0.27f, w: 1.00f)
+  style.colors[ImGuiCol.SliderGrab.ord]           = ImVec4(x: 0.47f, y: 0.77f, z: 0.83f, w: 0.14f)
+  style.colors[ImGuiCol.SliderGrabActive.ord]     = ImVec4(x: 0.71f, y: 0.22f, z: 0.27f, w: 1.00f)
+  style.colors[ImGuiCol.Button.ord]               = ImVec4(x: 0.47f, y: 0.77f, z: 0.83f, w: 0.14f)
+  style.colors[ImGuiCol.ButtonHovered.ord]        = igMED(0.86f)
+  style.colors[ImGuiCol.ButtonActive.ord]         = igMED(1.00f)
+  style.colors[ImGuiCol.Header.ord]               = igMED(0.76f)
+  style.colors[ImGuiCol.HeaderHovered.ord]        = igMED(0.86f)
+  style.colors[ImGuiCol.HeaderActive.ord]         = igHI(1.00f)
+  style.colors[ImGuiCol.ResizeGrip.ord]           = ImVec4(x: 0.47f, y: 0.77f, z: 0.83f, w: 0.04f)
+  style.colors[ImGuiCol.ResizeGripHovered.ord]    = igMED(0.78f)
+  style.colors[ImGuiCol.ResizeGripActive.ord]     = igMED(1.00f)
+  style.colors[ImGuiCol.PlotLines.ord]            = igTEXT(0.63f)
+  style.colors[ImGuiCol.PlotLinesHovered.ord]     = igMED(1.00f)
+  style.colors[ImGuiCol.PlotHistogram.ord]        = igTEXT(0.63f)
+  style.colors[ImGuiCol.PlotHistogramHovered.ord] = igMED(1.00f)
+  style.colors[ImGuiCol.TextSelectedBg.ord]       = igMED(0.43f)
 
   style.windowPadding     = ImVec2(x: 6, y: 4)
   style.windowRounding    = 0.0f
@@ -95,15 +93,15 @@ proc igCherryTheme(): void =
 
   style.windowTitleAlign.x = 0.50f
 
-  style.colors[ImGuiCol_Border] = ImVec4(x: 0.539f, y: 0.479f, z: 0.255f, w: 0.162f)
+  style.colors[ImGuiCol.Border.ord] = ImVec4(x: 0.539f, y: 0.479f, z: 0.255f, w: 0.162f)
   style.frameBorderSize  = 0.0f
   style.windowBorderSize = 1.0f
 
-proc glfwErrorEvent(error: GLFWErrorCode, description: cstring): void {.cdecl.} =
+proc glfwErrorEvent(error: i32, description: cstring): void {.cdecl.} =
   error("GLFW", $description)
 
-proc keyEvent(window: GLFWWindow, key: GLFWKey, scancode: i32, action: GLFWKeyAction, mods: GLFWKeyMod): void {.cdecl.} =
-  ioman.keyEvent(key, action != kaRelease)
+proc keyEvent(window: GLFWWindow, key: i32, scancode: i32, action: i32, mods: i32): void {.cdecl.} =
+  ioman.keyEvent(key, action != GLFWRelease)
   igGlfwKeyCallback(window, key, scancode, action, mods)
 
 proc scrollEvent(window: GLFWWindow, xoff: f64, yoff: f64): void {.cdecl.} =
@@ -112,7 +110,7 @@ proc scrollEvent(window: GLFWWindow, xoff: f64, yoff: f64): void {.cdecl.} =
 proc charEvent(window: GLFWWindow, code: u32): void {.cdecl.} =
   igGlfwCharCallback(window, code)
 
-proc mouseEvent(window: GLFWWindow, button: GLFWMouseButton, action: GLFWMouseAction, mods: GLFWKeyMod): void {.cdecl.} =
+proc mouseEvent(window: GLFWWindow, button: i32, action: i32, mods: i32): void {.cdecl.} =
   igGlfwMouseCallback(window, button, action, mods)
 
 proc resizeEvent(window: GLFWWindow, width: i32, height: i32): void {.cdecl.} =
@@ -137,12 +135,12 @@ proc newWindow*(width: i32, height: i32, title: string = "Mango", decorated: boo
     glfwInitiated = true
 
   glfwDefaultWindowHints()
-  glfwWindowHint(whDecorated, if decorated: GLFW_TRUE else: GLFW_FALSE)
-  glfwWindowHint(whResizable, if resizable: GLFW_TRUE else: GLFW_FALSE)
-  glfwWindowHint(whContextVersionMajor, 4)
-  glfwWindowHint(whContextVersionMinor, 1)
-  glfwWindowHint(whOpenglForwardCompat, GLFW_TRUE)
-  glfwWindowHint(whOpenglProfile, GLFW_OPENGL_CORE_PROFILE)
+  glfwWindowHint(GLFWDecorated, if decorated: GLFW_TRUE else: GLFW_FALSE)
+  glfwWindowHint(GLFWResizable, if resizable: GLFW_TRUE else: GLFW_FALSE)
+  glfwWindowHint(GLFWContextVersionMajor, 4)
+  glfwWindowHint(GLFWContextVersionMinor, 1)
+  glfwWindowHint(GLFWOpenglForwardCompat, GLFW_TRUE)
+  glfwWindowHint(GLFWOpenglProfile, GLFW_OPENGL_CORE_PROFILE)
 
   result.raw = glfwCreateWindow(width, height, title, nil, nil)
   lassert(result.raw != nil, "failed to create window")
@@ -179,7 +177,7 @@ proc newWindow*(width: i32, height: i32, title: string = "Mango", decorated: boo
 
 proc update*(window: Window) =
   glfwPollEvents()
-  if keyQ.isPressed() and keyLeftControl.isPressed():
+  if GLFWKey.Q.isPressed() and GLFWKey.LeftControl.isPressed():
     window.raw.setWindowShouldClose(true)
   igOpenGL3NewFrame()
   igGlfwNewFrame()

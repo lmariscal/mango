@@ -159,6 +159,7 @@ $RECYCLE.BIN/
 # Tests
 examples/rotating_cube
 examples/rectangle
+examples/terrain
 mango
 imgui.ini
 

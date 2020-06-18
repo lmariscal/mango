@@ -1,5 +1,3 @@
-# Written by Leonardo Mariscal <leo@cav.bz>, 2018
-
 import nimgl/opengl
 import glm
 import ../graphics
@@ -11,6 +9,12 @@ var
   currentVertexDecl: u32
   currentTexture2D: u32
   currentShaderProgram: u32
+
+converter toU32(e: GLenum): u32 =
+  e.u32
+
+converter toGLenum(u: u32): GLenum =
+  u.GLenum
 
 converter toString(chars: seq[cchar]): string =
   result = ""
@@ -111,7 +115,7 @@ proc use*(tex: Texture2D, active: u32 = 0): void =
   glActiveTexture(GL_TEXTURE0 + active)
   glBindTexture(GL_TEXTURE_2D, tex.id)
 
-proc data*(tex: Texture2D, internal_format: TextureFormat, format: TextureFormat, `type`: DataType, width: i32, height: i32, data: ptr cuchar): void =
+proc data*(tex: Texture2D, internal_format: TextureFormat, format: TextureFormat, `type`: DataType, width: i32, height: i32, data: ptr u8): void =
   if tex.id != currentTexture2D: tex.use()
   var type_gl = 0'u32
   case `type`:

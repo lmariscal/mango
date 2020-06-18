@@ -1,9 +1,12 @@
-# Written by Leonardo Mariscal <leo@cav.bz>, 2018
-
 import mango
 import mango/graphics
 import glm
 import glm/noise
+
+converter toArray(v: Vec3f): array[3, float32] =
+  result[0] = v[0]
+  result[1] = v[1]
+  result[2] = v[2]
 
 proc main() =
   when defined(release):
@@ -87,30 +90,31 @@ proc main() =
     # updat
     win.update()
     let io = igGetIO()
-    if keyQ.isPressed():
+    if GLFWKey.Q.isPressed():
       pos.y += io.deltaTime * velocity
-    elif keyE.isPressed():
+    elif GLFWKey.E.isPressed():
       pos.y -= io.deltaTime * velocity
 
-    if keyW.isPressed():
+    if GLFWKEy.W.isPressed():
       pos.z += io.deltaTime * velocity
-    elif keyS.isPressed():
+    elif GLFWKEy.S.isPressed():
       pos.z -= io.deltaTime * velocity
 
-    if keyA.isPressed():
+    if GLFWKey.A.isPressed():
       pos.x += io.deltaTime * velocity
-    elif keyD.isPressed():
+    elif GLFWKey.D.isPressed():
       pos.x -= io.deltaTime * velocity
 
     igText("Pos: ")
     igSameLine()
-    discard igDragFloat3("##pos", pos.x.addr)
+    var p: array[3, float32] = pos
+    discard igDragFloat3("##pos", p)
     igText("fps: %f", io.framerate)
     igText("Wireframe: ")
     igSameLine()
     discard igCheckbox("##wireframe", wireframe.addr)
 
-    if keyTab.isJustPressed():
+    if GLFWKey.Tab.isJustPressed():
       wireframe = not wireframe
 
     # draw
